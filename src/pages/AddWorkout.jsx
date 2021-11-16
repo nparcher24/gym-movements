@@ -1,9 +1,8 @@
-import { Field, useFormik } from "formik";
+import { useFormik } from "formik";
 import * as Yup from "yup";
 import React from "react";
 import { PlusSmIcon as PlusSmIconSolid } from "@heroicons/react/solid";
 import { Dialog, Transition } from "@headlessui/react";
-import { CheckIcon } from "@heroicons/react/outline";
 import AddSection from "./AddSection";
 
 export default function AddWorkout(props) {
@@ -36,14 +35,9 @@ export default function AddWorkout(props) {
       }
 
       console.log("Saved a workout");
+      props.saveToCloud();
     },
   });
-
-  function arrayRemove(arr, value) {
-    return arr.filter(function (ele) {
-      return ele != value;
-    });
-  }
 
   return (
     <div>
@@ -182,9 +176,10 @@ export default function AddWorkout(props) {
                     index,
                     arr
                   ) {
-                    return index != props.workoutIndex;
+                    return index !== props.workoutIndex;
                   });
 
+                  props.deleteFromCloud(props.workouts[props.workoutIndex]);
                   props.setWorkouts(filtered);
                   props.setShowAddWorkout(false);
                 } else {
