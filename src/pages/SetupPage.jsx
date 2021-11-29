@@ -32,7 +32,6 @@ export default function SetupPage(props) {
       alert("EXISTS");
     } else {
       props.addWorkout(workout);
-      // alert(JSON.stringify(workout, null, 2));
     }
 
     setOpen(false);
@@ -104,7 +103,7 @@ export default function SetupPage(props) {
                   <tbody>
                     {props.workouts.map((workout, workoutIdx) => (
                       <tr
-                        key={workout.email}
+                        key={workoutIdx}
                         className={
                           workoutIdx % 2 === 0 ? "bg-white" : "bg-gray-50"
                         }
@@ -138,7 +137,7 @@ export default function SetupPage(props) {
                           <button
                             type="button"
                             onClick={() => {
-                              alert(JSON.stringify(props.workouts, null, 2));
+                              // alert(JSON.stringify(props.workouts, null, 2));
                               props.setSelectedWorkout(workout);
                               navigate("/");
                             }}

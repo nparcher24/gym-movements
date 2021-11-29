@@ -3,6 +3,11 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
+      fontFamily: {
+        heading: ["American Captain", "sans-serif"],
+        subHeading: ["Kollektif", "sans-serif"],
+        body: ["Montserrat", "sans-serif"],
+      },
       colors: {
         TARed: "#AB0000",
         TADarkRed: "#780000",

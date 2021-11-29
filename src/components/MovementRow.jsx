@@ -4,7 +4,7 @@ import * as Yup from "yup";
 
 export default function MovementRow(props) {
   const [isEditing, setIsEditing] = React.useState(
-    props.movement.name.length == 0
+    props.movement.name.length === 0
   );
 
   const formik = useFormik({
@@ -100,7 +100,19 @@ export default function MovementRow(props) {
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
         {isEditing ? (
           <div>
-            <input
+            <select
+              name="videoName"
+              id="videoName"
+              className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.videoName}
+            >
+              {props.fileNames.map((file) => {
+                return <option>{file}</option>;
+              })}
+            </select>
+            {/* <input
               type="text"
               name="videoName"
               id="videoName"
@@ -111,7 +123,7 @@ export default function MovementRow(props) {
             />
             {formik.touched.videoName && formik.errors.videoName ? (
               <h1 className="text-red-600">{formik.errors.videoName}</h1>
-            ) : null}
+            ) : null} */}
           </div>
         ) : (
           props.movement.videoName
@@ -139,7 +151,7 @@ export default function MovementRow(props) {
                   index,
                   arr
                 ) {
-                  return index != props.movementIndex;
+                  return index !== props.movementIndex;
                 });
 
                 props.setMovements(filtered);

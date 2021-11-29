@@ -1,0 +1,7 @@
+{
+  "hosting": {
+    "public": "build",
+    "target": "movements",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+  }
+}

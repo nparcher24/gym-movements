@@ -4,6 +4,7 @@ import React from "react";
 import { PlusSmIcon as PlusSmIconSolid } from "@heroicons/react/solid";
 import { Dialog, Transition } from "@headlessui/react";
 import AddSection from "./AddSection";
+import { doc, setDoc, addDoc, collection, deleteDoc } from "firebase/firestore";
 
 export default function AddWorkout(props) {
   const [showAddSection, setShowAddSection] = React.useState(false);
@@ -27,15 +28,20 @@ export default function AddWorkout(props) {
     }),
     onSubmit: (values) => {
       values["sections"] = [...sections];
-
-      if (props.workout == null) {
-        props.saveWorkout(values);
+      if (props.workout != null) {
+        values["id"] = props.workout.id;
+        setDoc(doc(props.db, "workouts", values.id), values).then((error) => {
+          if (error != null) {
+            alert("ERROR SAVING: ", error);
+          } else {
+            console.log("SUCCESSFULLY SAVED");
+          }
+        });
       } else {
-        props.updateWorkout(values, props.workoutIndex);
+        const docRef = addDoc(collection(props.db, "workouts"), values);
+        console.log("New document written with ID: ", docRef.id);
       }
-
-      console.log("Saved a workout");
-      props.saveToCloud();
+      props.setShowAddWorkout(false);
     },
   });
 
@@ -168,23 +174,16 @@ export default function AddWorkout(props) {
             <button
               type="button"
               onClick={() => {
-                if (props.workoutIndex != null) {
-                  const oldWorkouts = [...props.workouts];
-
-                  const filtered = oldWorkouts.filter(function (
-                    value,
-                    index,
-                    arr
-                  ) {
-                    return index !== props.workoutIndex;
-                  });
-
-                  props.deleteFromCloud(props.workouts[props.workoutIndex]);
-                  props.setWorkouts(filtered);
-                  props.setShowAddWorkout(false);
-                } else {
-                  props.setShowAddWorkout(false);
+                if (props.workout != null) {
+                  deleteDoc(doc(props.db, "workouts", props.workout.id)).then(
+                    (error) => {
+                      if (error != null) {
+                        alert("ERROR DELETING DOC: ", error);
+                      }
+                    }
+                  );
                 }
+                props.setShowAddWorkout(false);
               }}
               className="bg-TADarkRed border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 mx-4"
             >
@@ -236,14 +235,16 @@ export default function AddWorkout(props) {
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <div
-                style={{ maxHeight: "90vh" }}
-                className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle max-w-7xl sm:w-full sm:p-6"
+                style={{ maxHeight: "80vh", maxWidth: "90vw" }}
+                className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle max-w-7xl sm:w-full sm:p-6 overflow-y-auto"
               >
                 <div>
                   <AddSection
+                    {...props}
                     sections={sections}
                     setSections={setSections}
                     sectionIndex={editIndex}
+                    setSectionIndex={setEditIndex}
                     setShowAddSection={setShowAddSection}
                   />
                 </div>

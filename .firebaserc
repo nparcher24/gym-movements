@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "leaderboard-d5992"
+  },
+  "targets": {
+    "leaderboard-d5992": {
+      "hosting": {
+        "movements": [
+          "movement-screen-gym"
+        ]
+      }
+    }
+  }
+}

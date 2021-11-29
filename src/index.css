@@ -1,4 +1,6 @@
 /* ./src/index.css */
+@import url("./assets/stylesheet.css");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

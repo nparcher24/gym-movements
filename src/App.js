@@ -8,12 +8,21 @@ import { StyledFirebaseAuth } from "react-firebaseui";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import { getFirestore } from "firebase/firestore";
-import { writeBatch, doc, deleteDoc } from "firebase/firestore";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import { collection, query, onSnapshot } from "firebase/firestore";
+import Dexie from "dexie";
+import { useLiveQuery } from "dexie-react-hooks";
+import ProgressModal from "./components/ProgressModal";
+const ldb = new Dexie("videos");
+ldb.version(1).stores({ videos: "++id,name,data" });
 
 function App() {
   const [workouts, setWorkouts] = React.useState([
     // More people...
   ]);
+  const [downloadProgress, setDownloadProgress] = React.useState(1.0);
+
+  const [test, setTest] = React.useState(null);
 
   //Fetch workouts from firestore
   const firebaseConfig = {
@@ -26,44 +35,36 @@ function App() {
     measurementId: "G-QDCWRPP56R",
   };
 
-  firebase.initializeApp(firebaseConfig);
+  const firebaseApp = firebase.initializeApp(firebaseConfig);
   const db = getFirestore();
+  const storage = getStorage(firebaseApp);
 
-  const saveToCloud = () => {
-    alert("aldkfj");
-    const batch = writeBatch(db);
+  React.useEffect(() => {
+    const q = query(collection(db, "workouts"));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const rawWorkouts = [];
+      querySnapshot.forEach((doc) => {
+        var aworkout = doc.data();
+        aworkout["dateMade"] = aworkout.dateMade.toDate();
+        aworkout["id"] = doc.id;
+        rawWorkouts.push(aworkout);
+      });
 
-    workouts.forEach((workout) => {
-      const aRef = doc(db, "workouts", workout.name);
-      batch.set(aRef, workout);
+      // console.log("Current workouts: ", workouts.join(", "));
+      setWorkouts(rawWorkouts);
     });
-
-    batch.commit();
-  };
-
-  const deleteFromCloud = (toDelete) => {
-    deleteDoc(doc(db, "workouts", toDelete.name));
-  };
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   const [selectedWorkout, setSelectedWorkout] = React.useState(null);
-
-  const addWorkout = (newWorkout) => {
-    const newWorkouts = [...workouts];
-    newWorkouts.push(newWorkout);
-    setWorkouts(newWorkouts);
-  };
-
-  const updateWorkout = (workout, index) => {
-    const newWorkouts = [...workouts];
-    newWorkouts[index] = workout;
-    setWorkouts(newWorkouts);
-  };
 
   const uiConfig = {
     // Popup signin flow rather than redirect flow.
     signInFlow: "popup",
     // Redirect to /signedIn after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
-    signInSuccessUrl: "/setup",
+    signInSuccessUrl: "movements.104010fitness.com/setup",
     // We will display Google and Facebook as auth providers.
     signInOptions: [firebase.auth.EmailAuthProvider.PROVIDER_ID],
   };
@@ -79,6 +80,63 @@ function App() {
       });
     return () => unregisterAuthObserver(); // Make sure we un-register Firebase observers when the component unmounts.
   }, []);
+
+  const allItems = useLiveQuery(() => ldb.videos.toArray(), []);
+
+  React.useEffect(() => {
+    //Download all new
+    if (selectedWorkout !== null) {
+      //Create a list of files to download
+      setDownloadProgress(0.0);
+
+      var tempNames = [];
+
+      //Delete all local items
+      allItems.map((item) => {
+        ldb.videos.delete(item.id);
+        return null;
+      });
+
+      var total = 0;
+      //Determine total number of videos to download
+      selectedWorkout.sections.map((section) => {
+        total = total + section.movements.length;
+        return null;
+      });
+      // console.log("TOTAL WORKOUTS TO DOWNLOAD: ", total);
+
+      var progress = 0.0;
+
+      selectedWorkout.sections.map((section) => {
+        section.movements.map((movement) => {
+          const tempRef = ref(storage, `movement-videos/${movement.videoName}`);
+          getDownloadURL(tempRef).then((url) => {
+            const xhr = new XMLHttpRequest();
+            xhr.responseType = "blob";
+            xhr.onload = (event) => {
+              const blob = xhr.response;
+              setTest(blob);
+              //Persist locally
+              event.preventDefault();
+              ldb.videos.add({ name: movement.videoName, data: blob });
+              // console.log(blob);
+              // console.log("DOWNLOADED: " + movement.videoName + " from " + url);
+              progress = progress + 1 / total;
+              setDownloadProgress(progress);
+              // console.log("Progress: ", progress);
+            };
+            xhr.open("GET", url);
+            xhr.send();
+
+            tempNames.push(url);
+          });
+          return null;
+        });
+        return null;
+      });
+      // console.log("Names to download: ", tempNames);
+    }
+  }, [selectedWorkout]);
 
   if (!isSignedIn) {
     return (
@@ -102,22 +160,31 @@ function App() {
             element={
               <SetupPage
                 workouts={workouts}
-                setWorkouts={setWorkouts}
-                addWorkout={addWorkout}
-                updateWorkout={updateWorkout}
                 selectedWorkout={selectedWorkout}
                 setSelectedWorkout={setSelectedWorkout}
-                saveToCloud={saveToCloud}
-                deleteFromCloud={deleteFromCloud}
+                db={db}
+                storage={storage}
               />
             }
           />
           <Route
             path="/"
-            element={<BasePage selectedWorkout={selectedWorkout} />}
+            element={
+              <BasePage
+                selectedWorkout={selectedWorkout}
+                allItems={allItems}
+                ldb={ldb}
+                test={test}
+              />
+            }
           />
         </Routes>
       </Router>
+      {downloadProgress < 1.0 ? (
+        <ProgressModal progress={downloadProgress} />
+      ) : (
+        <div />
+      )}
     </div>
   );
 }

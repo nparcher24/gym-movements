@@ -1,14 +1,15 @@
 import React from "react";
-import { Formik, useFormik } from "formik";
+import { useFormik } from "formik";
 import * as Yup from "yup";
 import { PlusSmIcon as PlusSmIconSolid } from "@heroicons/react/solid";
 import MovementRow from "../components/MovementRow";
+import { ref, listAll } from "firebase/storage";
 
 export default function AddSection(props) {
   const [movements, setMovements] = React.useState(
-    props.editIndex != null &&
-      props.sections[props.editIndex]?.movements != null
-      ? props.sections[props.editIndex].movements
+    props.sectionIndex != null &&
+      props.sections[props.sectionIndex]?.movements != null
+      ? props.sections[props.sectionIndex].movements
       : [
           {
             name: "",
@@ -19,11 +20,36 @@ export default function AddSection(props) {
         ]
   );
 
+  const [filenames, setFilenames] = React.useState([]);
+
+  React.useEffect(() => {
+    const listRef = ref(props.storage, "movement-videos");
+    return listAll(listRef)
+      .then((res) => {
+        var fileNames = [];
+        res.items.forEach((itemRef) => {
+          // All the items under listRef.
+          // console.log(itemRef.name);
+          fileNames.push(itemRef.name);
+        });
+        setFilenames(fileNames);
+        console.log("SUCCESSFULLY FETCHED FILENAMES");
+      })
+      .catch((error) => {
+        console.log("ERROR getting list of movements: ", error);
+      });
+  }, []);
+
   const formik = useFormik({
     initialValues: {
-      name: props.editIndex == null ? "" : props.sections[props.editIndex].name,
+      name:
+        props.sectionIndex == null
+          ? ""
+          : props.sections[props.sectionIndex].name,
       duration:
-        props.editIndex == null ? "" : props.sections[props.editIndex].name,
+        props.sectionIndex == null
+          ? ""
+          : props.sections[props.sectionIndex].duration,
       date: new Date(),
     },
     validationSchema: Yup.object({
@@ -38,11 +64,11 @@ export default function AddSection(props) {
     onSubmit: (values) => {
       values["movements"] = [...movements];
       const oldSections = [...props.sections];
-      if (props.editIndex == null) {
+      if (props.sectionIndex == null) {
         oldSections.push(values);
         props.setSections(oldSections);
       } else {
-        oldSections[props.editIndex] = values;
+        oldSections[props.sectionIndex] = values;
         props.setSections(oldSections);
       }
       props.setShowAddSection(false);
@@ -70,6 +96,10 @@ export default function AddSection(props) {
     setMovements(oldMovements);
   };
 
+  // if (props.sectionIndex != null) {
+  //   alert(props.sections[props.sectionIndex]);
+  // }
+
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
@@ -89,7 +119,7 @@ export default function AddSection(props) {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.name}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-TADarkBlue focus:border-TADarkBlue sm:text-sm"
               />
               {formik.touched.name && formik.errors.name ? (
                 <h1 className="text-red-600">{formik.errors.name}</h1>
@@ -109,7 +139,7 @@ export default function AddSection(props) {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.duration}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-TADarkBlue focus:border-TADarkBlue sm:text-sm"
               />
               {formik.touched.duration && formik.errors.duration ? (
                 <h1 className="text-red-600">{formik.errors.duration}</h1>
@@ -125,7 +155,7 @@ export default function AddSection(props) {
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
             <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-              <table className="min-w-full divide-y divide-gray-200">
+              <table className="min-w-full divide-y divide-gray-200 ">
                 <thead className="bg-gray-50">
                   <tr>
                     <th
@@ -161,10 +191,10 @@ export default function AddSection(props) {
                       <button
                         type="button"
                         onClick={addMovement}
-                        className="inline-flex items-center border border-transparent shadow-sm text-sm font-medium rounded-md text-white hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        className="inline-flex items-center border border-transparent shadow-sm text-sm font-medium rounded-md text-white hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-TADarkBlue"
                       >
                         <PlusSmIconSolid
-                          className="h-10 w-10 text-indigo-500"
+                          className="h-10 w-10 text-TADarkBlue"
                           aria-hidden="true"
                         />
                       </button>
@@ -179,6 +209,7 @@ export default function AddSection(props) {
                       updateMovement={updateMovement}
                       setMovements={setMovements}
                       movements={movements}
+                      fileNames={filenames}
                     />
                   ))}
                 </tbody>
@@ -195,22 +226,23 @@ export default function AddSection(props) {
               const oldSections = [...props.sections];
 
               const filtered = oldSections.filter(function (value, index, arr) {
-                return index != props.sectionIndex;
+                return index !== props.sectionIndex;
               });
 
-              props.setSections(filtered);
+              props.setSectionIndex(null);
               props.setShowAddSection(false);
+              props.setSections(filtered);
             } else {
               props.setShowAddSection(false);
             }
           }}
-          className="bg-red-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+          className="bg-red-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-red-700 transition duration-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
         >
           Delete
         </button>
         <button
           onClick={formik.submitForm}
-          className="bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          className="bg-TADarkBlue border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-TABlue transition duration-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-TADarkBlue"
         >
           Save
         </button>
