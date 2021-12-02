@@ -3,7 +3,6 @@ import "./App.css";
 import BasePage from "./pages/BasePage";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SetupPage from "./pages/SetupPage";
-// import { getAnalytics } from "firebase/analytics";
 import { StyledFirebaseAuth } from "react-firebaseui";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
@@ -13,6 +12,7 @@ import { collection, query, onSnapshot } from "firebase/firestore";
 import Dexie from "dexie";
 import { useLiveQuery } from "dexie-react-hooks";
 import ProgressModal from "./components/ProgressModal";
+import Temp from "./pages/Temp";
 const ldb = new Dexie("videos");
 ldb.version(1).stores({ videos: "++id,name,data" });
 
@@ -64,7 +64,7 @@ function App() {
     // Popup signin flow rather than redirect flow.
     signInFlow: "popup",
     // Redirect to /signedIn after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
-    signInSuccessUrl: "movements.104010fitness.com/setup",
+    signInSuccessUrl: "/setup",
     // We will display Google and Facebook as auth providers.
     signInOptions: [firebase.auth.EmailAuthProvider.PROVIDER_ID],
   };
@@ -155,6 +155,7 @@ function App() {
     <div>
       <Router>
         <Routes>
+          <Route path="/timer" element={<Temp />} />
           <Route
             path="/setup"
             element={

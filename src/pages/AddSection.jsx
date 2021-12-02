@@ -4,6 +4,7 @@ import * as Yup from "yup";
 import { PlusSmIcon as PlusSmIconSolid } from "@heroicons/react/solid";
 import MovementRow from "../components/MovementRow";
 import { ref, listAll } from "firebase/storage";
+import TimerRow from "../components/TimerRow";
 
 export default function AddSection(props) {
   const [movements, setMovements] = React.useState(
@@ -16,6 +17,20 @@ export default function AddSection(props) {
             duration: "",
             equipment: "",
             videoName: "",
+          },
+        ]
+  );
+  const [timers, setTimers] = React.useState(
+    props.sectionIndex != null &&
+      props.sections[props.sectionIndex]?.timers != null
+      ? props.sections[props.sectionIndex].timers
+      : [
+          {
+            countDown: true,
+            totalTime: "",
+            sound: true,
+            repeat: false,
+            startCount: false,
           },
         ]
   );
@@ -63,6 +78,7 @@ export default function AddSection(props) {
     }),
     onSubmit: (values) => {
       values["movements"] = [...movements];
+      values["timers"] = [...timers];
       const oldSections = [...props.sections];
       if (props.sectionIndex == null) {
         oldSections.push(values);
@@ -90,10 +106,31 @@ export default function AddSection(props) {
     ]);
   };
 
+  const addTimer = () => {
+    setTimers([
+      ...timers,
+
+      {
+        countDown: true,
+        totalTime: "",
+        sound: true,
+        repeat: false,
+        startCount: false,
+        date: Date(),
+      },
+    ]);
+  };
+
   const updateMovement = (newMovement, index) => {
     const oldMovements = [...movements];
     oldMovements[index] = newMovement;
     setMovements(oldMovements);
+  };
+
+  const updateTimer = (newTimer, index) => {
+    const oldTimers = [...timers];
+    oldTimers[index] = newTimer;
+    setTimers(oldTimers);
   };
 
   // if (props.sectionIndex != null) {
@@ -210,6 +247,80 @@ export default function AddSection(props) {
                       setMovements={setMovements}
                       movements={movements}
                       fileNames={filenames}
+                    />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h1 className="mx-6 text-md mt-6">Timer Setup</h1>
+      <div className="flex flex-col rounded-md border-gray-300 border mx-6">
+        <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+          <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+            <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+              <table className="min-w-full divide-y divide-gray-200 ">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    ></th>
+
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Duration
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Direction
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Sound
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Repeat
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Start Countdown
+                    </th>
+                    <th scope="col" className="relative px-6 py-3">
+                      <button
+                        type="button"
+                        onClick={addTimer}
+                        className="inline-flex items-center border border-transparent shadow-sm text-sm font-medium rounded-md text-white hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-TADarkBlue"
+                      >
+                        <PlusSmIconSolid
+                          className="h-10 w-10 text-TADarkBlue"
+                          aria-hidden="true"
+                        />
+                      </button>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {timers.map((timer, timerIndex) => (
+                    <TimerRow
+                      timer={timer}
+                      timerIndex={timerIndex}
+                      updateTimer={updateTimer}
+                      setTimers={setTimers}
+                      timers={timers}
                     />
                   ))}
                 </tbody>

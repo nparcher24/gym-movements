@@ -5,6 +5,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
 import AddWorkout from "./AddWorkout";
 import { useNavigate } from "react-router-dom";
+import firebase from "firebase/compat/app";
 
 export default function SetupPage(props) {
   const [open, setOpen] = React.useState(false);
@@ -22,6 +23,20 @@ export default function SetupPage(props) {
 
     return false;
   }
+
+  const signOut = () => {
+    firebase
+      .auth()
+      .signOut()
+      .then(
+        function () {
+          console.log("Signed Out");
+        },
+        function (error) {
+          console.error("Sign Out Error", error);
+        }
+      );
+  };
 
   const saveToJSON = () => {};
 
@@ -50,6 +65,14 @@ export default function SetupPage(props) {
       <div className="flex flex-col">
         <div className="flex py-8 justify-between">
           <h1 className="text-3xl">Workout Selection</h1>
+          {/* <button
+            onClick={() => {
+              signOut();
+            }}
+            className="relative inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-TABlue hover:bg-TADarkBlue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-TADarkRed"
+          >
+            LOGOUT
+          </button> */}
           <button
             type="button"
             onClick={() => {

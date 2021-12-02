@@ -7,6 +7,7 @@ module.exports = {
         heading: ["American Captain", "sans-serif"],
         subHeading: ["Kollektif", "sans-serif"],
         body: ["Montserrat", "sans-serif"],
+        timer: ["Alarm Clock", "sans-serif"],
       },
       colors: {
         TARed: "#AB0000",
