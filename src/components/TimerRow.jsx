@@ -32,7 +32,7 @@ export default function TimerRow(props) {
       newValues["countDown"] = values.countDown === "Count Up" ? false : true;
       newValues["totalTime"] = parseInt(values.totalTime);
 
-      alert(JSON.stringify(newValues, null, 2));
+      // alert(JSON.stringify(newValues, null, 2));
       props.updateTimer(values, props.timerIndex);
       setIsEditing(false);
     },

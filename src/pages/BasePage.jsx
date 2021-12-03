@@ -45,7 +45,7 @@ export default function BasePage(props) {
 
   return (
     <div>
-      <div className="flex flex-row">
+      <div className="flex flex-row w-screen overflow-x-hidden">
         <div className="relative w-1/3 h-screen flex flex-col ">
           {selectedSection != null ? (
             props.selectedWorkout.sections.map((section, index) => {
