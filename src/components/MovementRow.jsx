@@ -19,11 +19,13 @@ export default function MovementRow(props) {
       name: Yup.string().max(60, "Too long").required("Required"),
       duration: Yup.string().max(60, "Too long"),
       equipment: Yup.string().max(60, "Too long"),
-      videoName: Yup.string().required("Required"),
       date: Yup.date(),
     }),
     onSubmit: (values) => {
       //   alert(JSON.stringify(values, null, 2));
+      if (values.videoName === "") {
+        values.videoName = "NONE";
+      }
       props.updateMovement(values, props.movementIndex);
       setIsEditing(false);
     },

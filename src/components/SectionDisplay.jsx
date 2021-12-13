@@ -1,16 +1,11 @@
 import React from "react";
-import Swoop from "../assets/swoop.svg";
+// import Swoop from "../assets/swoop.svg";
 import Timer from "./Timer";
 
 export default function SectionDisplay(props) {
   return (
-    <div className="h-screen flex flex-col overflow-y-hidden relative justify-between">
-      <div className="h-full relative flex flex-col justify-evenly inset-0 py-4 pl-4 ">
-        <img
-          className="absolute h-screen w-full opacity-10 object-left"
-          src={Swoop}
-          alt="104010 Swoosh"
-        />
+    <div className="h-full absolute inset-0 flex flex-col overflow-y-hidden  justify-between pt-8">
+      <div className="h-full relative flex flex-col space-y-4 inset-0 py-4 pl-4 ">
         <div className="ml-4">
           <h1 className="text-5xl font-heading tracking-widest">
             {props.selectedSection.name.toUpperCase()}
@@ -19,14 +14,13 @@ export default function SectionDisplay(props) {
             {props.selectedSection.duration}
           </h1>
         </div>
-        {/* <div className="absolute mt-24 flex flex-col"> */}
         {props.selectedSection.movements.map((movement, index) => {
           return (
             <div key={index} className="ml-4">
               <div>
                 <h1
                   className={`${
-                    props.selectedSection.movements.length > 8
+                    props.selectedSection.movements.length > 6
                       ? "text-xl"
                       : "text-3xl"
                   } font-subHeading inline`}
@@ -36,7 +30,7 @@ export default function SectionDisplay(props) {
 
                 <h1
                   className={`${
-                    props.selectedSection.movements.length > 8
+                    props.selectedSection.movements.length > 6
                       ? "text-xl"
                       : "text-3xl"
                   } font-subHeading inline`}
@@ -46,18 +40,18 @@ export default function SectionDisplay(props) {
               </div>
               <h2
                 className={`${
-                  props.selectedSection.movements.length > 8
+                  props.selectedSection.movements.length > 6
                     ? "text-md"
-                    : "text-lg"
+                    : "text-2xl"
                 } font-body ml-6`}
               >
                 {movement.duration}
               </h2>
               <h2
                 className={`${
-                  props.selectedSection.movements.length > 8
+                  props.selectedSection.movements.length > 6
                     ? "text-md"
-                    : "text-lg"
+                    : "text-2xl"
                 } font-body ml-6`}
               >
                 {movement.equipment}
@@ -65,7 +59,6 @@ export default function SectionDisplay(props) {
             </div>
           );
         })}
-        {/* </div> */}
       </div>
       <Timer selectedSection={props.selectedSection} />
     </div>

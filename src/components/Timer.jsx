@@ -104,9 +104,11 @@ export default function Timer(props) {
       } else {
         //Determine if we should start a countdown
         if (newTimer.startCount) {
+          console.log("THIS WORKED");
           started();
           setTimerIndex(oldIndex + 1);
         } else {
+          console.log("THIS DIDNT");
           setSelectedTimer(newTimer);
           setTime(newTimer.countDown ? newTimer.totalTime : 0);
         }
@@ -191,18 +193,16 @@ export default function Timer(props) {
   }
 
   return (
-    <div className="items-center flex justify-center  p-2 w-full">
-      {/* <button
-        className="p-4 bg-gray-800 text-white "
-        onClick={() => {
-          toggleShort();
-        }}
-      >
-        PLAY SOUND
-      </button> */}
+    <div className="items-center flex justify-center  p-2 w-full overflow-x-hidden mb-2">
       <h1 className="w-full text-center rounded-2xl font-timer text-8xl text-red-500 bg-gray-800 py-2 shadow-2xl">
-        <span className="text-blue-400 mr-10">{timerIndex + 1}</span>
-        {sec2str(time)}
+        {selectedTimer.isStartCount ? (
+          <div>{time}</div>
+        ) : (
+          <div>
+            <span className="text-blue-400 mr-10">{timerIndex + 1}</span>
+            {sec2str(time)}
+          </div>
+        )}
       </h1>
     </div>
   );

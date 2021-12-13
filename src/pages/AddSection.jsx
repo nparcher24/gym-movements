@@ -16,7 +16,7 @@ export default function AddSection(props) {
             name: "",
             duration: "",
             equipment: "",
-            videoName: "",
+            videoName: "NONE",
           },
         ]
   );
@@ -47,6 +47,7 @@ export default function AddSection(props) {
           // console.log(itemRef.name);
           fileNames.push(itemRef.name);
         });
+        fileNames.unshift("NONE");
         setFilenames(fileNames);
         console.log("SUCCESSFULLY FETCHED FILENAMES");
       })

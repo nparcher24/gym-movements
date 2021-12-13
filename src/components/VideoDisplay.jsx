@@ -29,8 +29,8 @@ export default function VideoDisplay(props) {
   }
 
   return (
-    <div className="">
-      <div className="h-screen flex flex-wrap -mx-2 overflow-hidden justify-center items-center">
+    <div className="absolute inset-0">
+      <div className="flex flex-wrap -mx-2 overflow-hidden justify-left pl-5 items-center h-full ">
         {props.selectedSection.movements.map((movement, index) => {
           return props.allItems.find((obj) => {
             return obj.name === movement.videoName;
@@ -38,18 +38,31 @@ export default function VideoDisplay(props) {
             index >= playIndex * 4 &&
             index < (playIndex + 1) * 4 ? (
             <Fade key={index}>
-              <div className="relative pt-8 h-1/2 overflow-hidden ">
+              <div
+                style={{
+                  height:
+                    props.selectedSection.movements.length === 1
+                      ? "80%"
+                      : props.selectedSection.movements.length === 3
+                      ? "42vh"
+                      : "40vh",
+                  width:
+                    props.selectedSection.movements.length === 1 ? "" : "40%",
+                }}
+                className="mx-2 relative pt-8 overflow-hidden rounded-xl border-2 border-black bg-white shadow-xl"
+              >
                 <video
                   className="w-full h-full"
                   autoPlay
                   loop
+                  muted
                   src={window.URL.createObjectURL(
                     props.allItems.find((obj) => {
                       return obj.name === movement.videoName;
                     }).data
                   )}
                 />
-                <h1 className=" absolute  top-0 w-full text-center font-heading tracking-wider text-4xl ">
+                <h1 className=" absolute py-2 top-0 w-full text-center font-heading tracking-wider text-4xl ">
                   {movement.name.toUpperCase()}
                 </h1>
               </div>

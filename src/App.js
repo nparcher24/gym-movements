@@ -100,37 +100,46 @@ function App() {
       var total = 0;
       //Determine total number of videos to download
       selectedWorkout.sections.map((section) => {
-        total = total + section.movements.length;
+        let aSection = section.movements.filter(
+          (movement) => movement.videoName !== "NONE"
+        );
+        total = total + aSection.length;
         return null;
       });
       // console.log("TOTAL WORKOUTS TO DOWNLOAD: ", total);
 
       var progress = 0.0;
 
-      selectedWorkout.sections.map((section) => {
-        section.movements.map((movement) => {
-          const tempRef = ref(storage, `movement-videos/${movement.videoName}`);
-          getDownloadURL(tempRef).then((url) => {
-            const xhr = new XMLHttpRequest();
-            xhr.responseType = "blob";
-            xhr.onload = (event) => {
-              const blob = xhr.response;
-              setTest(blob);
-              //Persist locally
-              event.preventDefault();
-              ldb.videos.add({ name: movement.videoName, data: blob });
-              // console.log(blob);
-              // console.log("DOWNLOADED: " + movement.videoName + " from " + url);
-              progress = progress + 1 / total;
-              setDownloadProgress(progress);
-              // console.log("Progress: ", progress);
-            };
-            xhr.open("GET", url);
-            xhr.send();
+      selectedWorkout.sections.forEach((section) => {
+        section.movements.forEach((movement) => {
+          if (movement.videoName !== "NONE") {
+            const tempRef = ref(
+              storage,
+              `movement-videos/${movement.videoName}`
+            );
 
-            tempNames.push(url);
-          });
-          return null;
+            getDownloadURL(tempRef).then((url) => {
+              const xhr = new XMLHttpRequest();
+              xhr.responseType = "blob";
+              xhr.onload = (event) => {
+                const blob = xhr.response;
+                setTest(blob);
+                //Persist locally
+                event.preventDefault();
+                ldb.videos.add({ name: movement.videoName, data: blob });
+                // console.log(blob);
+                // console.log("DOWNLOADED: " + movement.videoName + " from " + url);
+                progress = progress + 1 / total;
+                setDownloadProgress(progress);
+                // console.log("Progress: ", progress);
+              };
+              xhr.open("GET", url);
+              xhr.send();
+
+              tempNames.push(url);
+            });
+            return null;
+          }
         });
         return null;
       });
