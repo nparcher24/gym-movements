@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import { PlusSmIcon as PlusSmIconSolid } from "@heroicons/react/solid";
 import MovementRow from "../components/MovementRow";
 import { ref, listAll } from "firebase/storage";
-import TimerRow from "../components/TimerRow";
+// import TimerRow from "../components/TimerRow";
 
 export default function AddSection(props) {
   const [movements, setMovements] = React.useState(
@@ -17,20 +17,6 @@ export default function AddSection(props) {
             duration: "",
             equipment: "",
             videoName: "NONE",
-          },
-        ]
-  );
-  const [timers, setTimers] = React.useState(
-    props.sectionIndex != null &&
-      props.sections[props.sectionIndex]?.timers != null
-      ? props.sections[props.sectionIndex].timers
-      : [
-          {
-            countDown: true,
-            totalTime: "",
-            sound: true,
-            repeat: false,
-            startCount: false,
           },
         ]
   );
@@ -79,7 +65,7 @@ export default function AddSection(props) {
     }),
     onSubmit: (values) => {
       values["movements"] = [...movements];
-      values["timers"] = [...timers];
+      // values["timers"] = [...timers];
       const oldSections = [...props.sections];
       if (props.sectionIndex == null) {
         oldSections.push(values);
@@ -107,20 +93,20 @@ export default function AddSection(props) {
     ]);
   };
 
-  const addTimer = () => {
-    setTimers([
-      ...timers,
+  // const addTimer = () => {
+  //   setTimers([
+  //     ...timers,
 
-      {
-        countDown: true,
-        totalTime: "",
-        sound: true,
-        repeat: false,
-        startCount: false,
-        date: Date(),
-      },
-    ]);
-  };
+  //     {
+  //       countDown: true,
+  //       totalTime: "",
+  //       sound: true,
+  //       repeat: false,
+  //       startCount: false,
+  //       date: Date(),
+  //     },
+  //   ]);
+  // };
 
   const updateMovement = (newMovement, index) => {
     const oldMovements = [...movements];
@@ -128,11 +114,11 @@ export default function AddSection(props) {
     setMovements(oldMovements);
   };
 
-  const updateTimer = (newTimer, index) => {
-    const oldTimers = [...timers];
-    oldTimers[index] = newTimer;
-    setTimers(oldTimers);
-  };
+  // const updateTimer = (newTimer, index) => {
+  //   const oldTimers = [...timers];
+  //   oldTimers[index] = newTimer;
+  //   setTimers(oldTimers);
+  // };
 
   // if (props.sectionIndex != null) {
   //   alert(props.sections[props.sectionIndex]);
@@ -257,7 +243,7 @@ export default function AddSection(props) {
         </div>
       </div>
 
-      <h1 className="mx-6 text-md mt-6">Timer Setup</h1>
+      {/* <h1 className="mx-6 text-md mt-6">Timer Setup</h1>
       <div className="flex flex-col rounded-md border-gray-300 border mx-6">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -329,7 +315,7 @@ export default function AddSection(props) {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div className="px-4 py-3 bg-gray-50 text-right sm:px-6 space-x-2">
         <button
