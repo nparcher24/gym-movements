@@ -4,13 +4,13 @@ import Timer from "./Timer";
 
 export default function SectionDisplay(props) {
   return (
-    <div className="h-full absolute inset-0 flex flex-col overflow-y-hidden  justify-between pt-8">
+    <div className="h-full inset-0 flex flex-col overflow-y-hidden  justify-between pt-8 ">
       <div className="h-full relative flex flex-col space-y-4 inset-0 py-4 pl-4 ">
         <div className="ml-4">
-          <h1 className="text-5xl font-heading tracking-widest">
+          <h1 className="text-6xl font-heading tracking-widest">
             {props.selectedSection.name.toUpperCase()}
           </h1>
-          <h1 className="text-xl font-subHeading -mt-2">
+          <h1 className="text-4xl font-subHeading -mt-2">
             {props.selectedSection.duration}
           </h1>
         </div>
@@ -21,9 +21,9 @@ export default function SectionDisplay(props) {
                 <h1
                   className={`${
                     props.selectedSection.movements.length > 6
-                      ? "text-xl"
-                      : "text-3xl"
-                  } font-subHeading inline`}
+                      ? "text-3xl"
+                      : "text-4xl"
+                  } font-extrabold inline`}
                 >
                   {index + 1 + "  -  "}
                 </h1>
@@ -31,9 +31,9 @@ export default function SectionDisplay(props) {
                 <h1
                   className={`${
                     props.selectedSection.movements.length > 6
-                      ? "text-xl"
-                      : "text-3xl"
-                  } font-subHeading inline`}
+                      ? "text-3xl"
+                      : "text-4xl"
+                  } font-extrabold inline`}
                 >
                   {movement.name.toUpperCase()}
                 </h1>
@@ -60,7 +60,7 @@ export default function SectionDisplay(props) {
           );
         })}
       </div>
-      <Timer selectedSection={props.selectedSection} />
+      {/* <Timer selectedSection={props.selectedSection} /> */}
     </div>
   );
 }

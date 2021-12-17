@@ -5,13 +5,82 @@ import { PlusSmIcon as PlusSmIconSolid } from "@heroicons/react/solid";
 import { Dialog, Transition } from "@headlessui/react";
 import AddSection from "./AddSection";
 import { doc, setDoc, addDoc, collection, deleteDoc } from "firebase/firestore";
+// import TimerRow from "../components/TimerRow";
+import TimerBuilder from "../components/TimerBuilder";
 
 export default function AddWorkout(props) {
   const [showAddSection, setShowAddSection] = React.useState(false);
   const [sections, setSections] = React.useState(
     props.workout?.sections != null ? props.workout.sections : []
   );
+
+  const [timers, setTimers] = React.useState(
+    props.workout?.timers != null
+      ? props.workout.timers
+      : [
+          {
+            countDown: true,
+            totalTime: "",
+            sound: true,
+            repeat: false,
+            showNumber: false,
+            restartNumber: false,
+            number: null,
+            group: false,
+            startCount: false,
+            autoStart: true,
+            date: Date(),
+          },
+        ]
+  );
+
+  function moveRowDown(row) {
+    var newArray = [...timers];
+    arraymove(newArray, row, row + 1);
+    setTimers(newArray);
+    // alert(JSON.stringify(props.timers));
+  }
+
+  function moveRowUp(row) {
+    const newArray = [...timers];
+    arraymove(newArray, row, row - 1);
+    setTimers(newArray);
+  }
+
+  function arraymove(arr, fromIndex, toIndex) {
+    const element = arr[fromIndex];
+    arr.splice(fromIndex, 1);
+    arr.splice(toIndex, 0, element);
+  }
+
+  function updateTimerNumbers() {
+    console.log("Called Update Timers");
+    const oldTimers = [...timers];
+    const newTimers = [];
+    var lastIndex = 1;
+    oldTimers.forEach((timer) => {
+      const newTimer = timer;
+      if (newTimer.restartNumber) {
+        lastIndex = 2;
+        newTimer.number = 1;
+        newTimer.showNumber = true;
+      } else if (newTimer.showNumber) {
+        if (newTimer.group) {
+          newTimer.number = lastIndex - 1;
+        } else {
+          newTimer.number = lastIndex;
+          lastIndex = lastIndex + 1;
+        }
+      } else if (!newTimer.showNumber) {
+        newTimer.number = null;
+      }
+      newTimers.push(newTimer);
+    });
+    setTimers(newTimers);
+  }
+
   const [editIndex, setEditIndex] = React.useState(null);
+  const [showTimerSetup, setShowTimerSetup] = React.useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -28,6 +97,7 @@ export default function AddWorkout(props) {
     }),
     onSubmit: (values) => {
       values["sections"] = [...sections];
+      values["timers"] = [...timers];
       if (props.workout != null) {
         values["id"] = props.workout.id;
         setDoc(doc(props.db, "workouts", values.id), values).then((error) => {
@@ -87,7 +157,6 @@ export default function AddWorkout(props) {
                     value={formik.values.description}
                     rows={3}
                     className="max-w-lg shadow-sm block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-gray-300 rounded-md p-2"
-                    defaultValue={""}
                   />
                   {formik.touched.description && formik.errors.description ? (
                     <h1 className="text-TADarkRed">
@@ -95,6 +164,18 @@ export default function AddWorkout(props) {
                     </h1>
                   ) : null}
                 </div>
+              </div>
+
+              <div className="col-span-6 sm:col-span-8">
+                <button
+                  type="button"
+                  className="w-full bg-gray-200 rounded-lg border-TADarkBlue border-2 text-TADarkBlue py-3 text-lg hover:opacity-70 transition duration-200"
+                  onClick={() => {
+                    setShowTimerSetup(true);
+                  }}
+                >
+                  Timer Setup
+                </button>
               </div>
             </div>
           </div>
@@ -137,7 +218,7 @@ export default function AddWorkout(props) {
                     <tbody>
                       {sections.map((section, sectionIdx) => (
                         <tr
-                          key={section.email}
+                          key={sectionIdx}
                           className={
                             sectionIdx % 2 === 0 ? "bg-white" : "bg-gray-50"
                           }
@@ -170,7 +251,7 @@ export default function AddWorkout(props) {
             </div>
           </div>
 
-          <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
+          <div className="px-4 py-3  text-right sm:px-6">
             <button
               type="button"
               onClick={() => {
@@ -262,6 +343,16 @@ export default function AddWorkout(props) {
           </div>
         </Dialog>
       </Transition.Root>
+
+      <TimerBuilder
+        show={showTimerSetup}
+        setShow={setShowTimerSetup}
+        setTimers={setTimers}
+        timers={timers}
+        updateTimerNumbers={updateTimerNumbers}
+        moveDown={moveRowDown}
+        moveUp={moveRowUp}
+      />
     </div>
   );
 }

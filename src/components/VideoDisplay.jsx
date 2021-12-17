@@ -3,6 +3,20 @@ import Fade from "react-reveal";
 
 export default function VideoDisplay(props) {
   const [playIndex, setPlayIndex] = React.useState(0);
+  const [videos, setVideos] = React.useState([]);
+
+  React.useState(() => {
+    const filtered = props.selectedSection.movements.filter((movement) => {
+      var exists = false;
+      props.allItems.forEach((item) => {
+        if (movement.videoName === item.name) {
+          exists = true;
+        }
+      });
+      return exists;
+    });
+    setVideos(filtered);
+  }, [props.selectedSection.movements]);
 
   //   const [vid, setVid] = React.useState(props.allItems.find(hasName).data);
 
@@ -17,7 +31,7 @@ export default function VideoDisplay(props) {
   }, 10000);
 
   function nextVideo() {
-    const max = Math.ceil(props.selectedSection.movements.length / 4);
+    const max = Math.ceil(videos.length / 4);
     const index = playIndex;
     if (index + 1 < max) {
       setPlayIndex(index + 1);
@@ -31,7 +45,7 @@ export default function VideoDisplay(props) {
   return (
     <div className="absolute inset-0">
       <div className="flex flex-wrap -mx-2 overflow-hidden justify-left pl-5 items-center h-full ">
-        {props.selectedSection.movements.map((movement, index) => {
+        {videos.map((movement, index) => {
           return props.allItems.find((obj) => {
             return obj.name === movement.videoName;
           }) != null &&

@@ -5,6 +5,7 @@ import VideoDisplay from "../components/VideoDisplay";
 import LogoImage from "../assets/darklogo.png";
 import { useNavigate } from "react-router-dom";
 import ProgressBar from "../components/ProgressBar";
+import Timer from "../components/Timer";
 
 // import { useLiveQuery } from "dexie-react-hooks";
 
@@ -69,11 +70,23 @@ export default function BasePage(props) {
                   <Fade>
                     {sectionIndex === index ? (
                       // <Fade className="h-full w-full">
-                      <SectionDisplay
-                        selectedSection={
-                          props.selectedWorkout.sections[sectionIndex]
-                        }
-                      />
+                      <div className="absolute flex flex-col h-full w-full ">
+                        <SectionDisplay
+                          selectedSection={
+                            props.selectedWorkout.sections[sectionIndex]
+                          }
+                        />
+                        <Timer
+                          selectedSection={
+                            props.selectedWorkout.sections[sectionIndex]
+                          }
+                          timers={
+                            props.selectedWorkout.timers != null
+                              ? props.selectedWorkout.timers
+                              : []
+                          }
+                        />
+                      </div>
                     ) : (
                       // </Fade>
                       <div />

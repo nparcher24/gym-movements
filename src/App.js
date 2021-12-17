@@ -12,7 +12,8 @@ import { collection, query, onSnapshot } from "firebase/firestore";
 import Dexie from "dexie";
 import { useLiveQuery } from "dexie-react-hooks";
 import ProgressModal from "./components/ProgressModal";
-import Temp from "./pages/Temp";
+// import Temp from "./pages/Temp";
+import Timer from "./components/Timer";
 const ldb = new Dexie("videos");
 ldb.version(1).stores({ videos: "++id,name,data" });
 
@@ -164,7 +165,7 @@ function App() {
     <div>
       <Router>
         <Routes>
-          <Route path="/timer" element={<Temp />} />
+          <Route path="/timer" element={<Timer />} />
           <Route
             path="/setup"
             element={
