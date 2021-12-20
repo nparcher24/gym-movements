@@ -7,6 +7,7 @@ import AddSection from "./AddSection";
 import { doc, setDoc, addDoc, collection, deleteDoc } from "firebase/firestore";
 // import TimerRow from "../components/TimerRow";
 import TimerBuilder from "../components/TimerBuilder";
+import { ArrowDownIcon, ArrowUpIcon } from "@heroicons/react/solid";
 
 export default function AddWorkout(props) {
   const [showAddSection, setShowAddSection] = React.useState(false);
@@ -34,17 +35,30 @@ export default function AddWorkout(props) {
         ]
   );
 
-  function moveRowDown(row) {
+  function moveTimerRowDown(row) {
     var newArray = [...timers];
     arraymove(newArray, row, row + 1);
     setTimers(newArray);
     // alert(JSON.stringify(props.timers));
   }
 
-  function moveRowUp(row) {
+  function moveTimerRowUp(row) {
     const newArray = [...timers];
     arraymove(newArray, row, row - 1);
     setTimers(newArray);
+  }
+
+  function moveSectionRowDown(row) {
+    var newArray = [...sections];
+    arraymove(newArray, row, row + 1);
+    setSections(newArray);
+    // alert(JSON.stringify(props.timers));
+  }
+
+  function moveSectionRowUp(row) {
+    const newArray = [...sections];
+    arraymove(newArray, row, row - 1);
+    setSections(newArray);
   }
 
   function arraymove(arr, fromIndex, toIndex) {
@@ -231,16 +245,50 @@ export default function AddWorkout(props) {
                           </td>
 
                           <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setEditIndex(sectionIdx);
-                                setShowAddSection(true);
-                              }}
-                              className="text-indigo-600 hover:text-indigo-900"
-                            >
-                              Edit
-                            </button>
+                            <div className="flex space-x-4">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setEditIndex(sectionIdx);
+                                  setShowAddSection(true);
+                                }}
+                                className="text-indigo-600 hover:text-indigo-900"
+                              >
+                                Edit
+                              </button>
+                              <div className="flex">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    moveSectionRowUp(sectionIdx);
+                                  }}
+                                  disabled={sectionIdx === 0}
+                                >
+                                  <ArrowUpIcon
+                                    className={` h-5 w-5 ${
+                                      sectionIdx === 0
+                                        ? "text-gray-300"
+                                        : "text-blue-600"
+                                    }`}
+                                  />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    moveSectionRowDown(sectionIdx);
+                                  }}
+                                  disabled={sectionIdx >= sections.length - 1}
+                                >
+                                  <ArrowDownIcon
+                                    className={` h-5 w-5 ${
+                                      sectionIdx >= sections.length - 1
+                                        ? "text-gray-300"
+                                        : "text-blue-600"
+                                    }`}
+                                  />
+                                </button>
+                              </div>
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -329,15 +377,6 @@ export default function AddWorkout(props) {
                     setShowAddSection={setShowAddSection}
                   />
                 </div>
-                {/* <div className="mt-5 sm:mt-6">
-                  <button
-                    type="submit"
-                    className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-TADarkBlue text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
-                    onClick={() => setShowAddSection(false)}
-                  >
-                    Save
-                  </button>
-                </div> */}
               </div>
             </Transition.Child>
           </div>
@@ -350,8 +389,8 @@ export default function AddWorkout(props) {
         setTimers={setTimers}
         timers={timers}
         updateTimerNumbers={updateTimerNumbers}
-        moveDown={moveRowDown}
-        moveUp={moveRowUp}
+        moveDown={moveTimerRowDown}
+        moveUp={moveTimerRowUp}
       />
     </div>
   );

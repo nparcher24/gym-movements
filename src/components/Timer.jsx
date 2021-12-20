@@ -50,6 +50,7 @@ export default function Timer(props) {
 
   //start timer
   function startTimer() {
+    console.log("adlkfjalksdjf");
     if (!running) {
       setRunning(true);
       if (selectedTimer.startCount) {
@@ -81,10 +82,33 @@ export default function Timer(props) {
 
   function resetCurrent() {
     setRunning(false);
-    setTimerIndex(0);
-    let startTimer = props.timers[0];
+    // setTimerIndex(0);
+    let startTimer = props.timers[timerIndex];
     setSelectedTimer(startTimer);
     setTime(startTimer.countDown ? startTimer.totalTime : 0);
+  }
+
+  function nextTimer() {
+    console.log(timerIndex);
+    if (timerIndex < props.timers.length - 1) {
+      setRunning(false);
+      let newIndex = timerIndex + 1;
+      let newTimer = props.timers[newIndex];
+      setSelectedTimer(newTimer);
+      setTime(newTimer.countDown ? newTimer.totalTime : 0);
+      setTimerIndex(newIndex);
+    }
+  }
+
+  function prevTimer() {
+    if (timerIndex > 0) {
+      setRunning(false);
+      let newIndex = timerIndex - 1;
+      let newTimer = props.timers[newIndex];
+      setSelectedTimer(newTimer);
+      setTime(newTimer.countDown ? newTimer.totalTime : 0);
+      setTimerIndex(newIndex);
+    }
   }
 
   function timerEnded() {
@@ -142,13 +166,15 @@ export default function Timer(props) {
   }
 
   const upHandler = ({ key }) => {
-    if (props.selectedSection != null) {
-      if (key === "ArrowUp") {
-        startTimer();
-      } else if (key === "ArrowDown") {
-        // resetTimer();
-        resetCurrent();
-      }
+    if (key === "ArrowUp") {
+      startTimer();
+    } else if (key === "ArrowDown") {
+      // resetTimer();
+      resetCurrent();
+    } else if (key === "ArrowLeft") {
+      prevTimer();
+    } else if (key === "ArrowRight") {
+      nextTimer();
     }
   };
 
@@ -209,7 +235,7 @@ export default function Timer(props) {
   }
 
   return (
-    <div className="items-center flex justify-center  p-2 w-full overflow-x-hidden mb-2">
+    <div className="absolute bottom-0 items-center flex justify-center p-2 w-full overflow-x-hidden mb-2 ">
       <h1 className="w-full text-center rounded-2xl font-timer text-8xl text-red-500 bg-gray-800 py-2 shadow-2xl">
         {selectedTimer.isStartCount ? (
           <div>{time}</div>

@@ -21,6 +21,25 @@ export default function AddSection(props) {
         ]
   );
 
+  function moveRowDown(row) {
+    var newArray = [...movements];
+    arraymove(newArray, row, row + 1);
+    setMovements(newArray);
+    // alert(JSON.stringify(props.timers));
+  }
+
+  function moveRowUp(row) {
+    const newArray = [...movements];
+    arraymove(newArray, row, row - 1);
+    setMovements(newArray);
+  }
+
+  function arraymove(arr, fromIndex, toIndex) {
+    const element = arr[fromIndex];
+    arr.splice(fromIndex, 1);
+    arr.splice(toIndex, 0, element);
+  }
+
   const [filenames, setFilenames] = React.useState([]);
 
   React.useEffect(() => {
@@ -234,6 +253,8 @@ export default function AddSection(props) {
                       setMovements={setMovements}
                       movements={movements}
                       fileNames={filenames}
+                      moveRowUp={moveRowUp}
+                      moveRowDown={moveRowDown}
                     />
                   ))}
                 </tbody>

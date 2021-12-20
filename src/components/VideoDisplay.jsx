@@ -44,7 +44,7 @@ export default function VideoDisplay(props) {
 
   return (
     <div className="absolute inset-0">
-      <div className="flex flex-wrap -mx-2 overflow-hidden justify-left pl-5 items-center h-full ">
+      <div className="flex flex-wrap -mx-2 overflow-hidden justify-center pr-28 pl-5 items-center h-full ">
         {videos.map((movement, index) => {
           return props.allItems.find((obj) => {
             return obj.name === movement.videoName;
@@ -54,19 +54,21 @@ export default function VideoDisplay(props) {
             <Fade key={index}>
               <div
                 style={{
-                  height:
-                    props.selectedSection.movements.length === 1
-                      ? "80%"
-                      : props.selectedSection.movements.length === 3
-                      ? "42vh"
-                      : "40vh",
-                  width:
-                    props.selectedSection.movements.length === 1 ? "" : "40%",
+                  height: "44vh",
+                  // props.selectedSection.movements.length === 1
+                  //   ? "80%"
+                  //   : props.selectedSection.movements.length === 3
+                  //   ? "42vh"
+                  //   : "40vh",
+                  width: "40%",
                 }}
-                className="mx-2 relative pt-8 overflow-hidden rounded-xl border-2 border-black bg-white shadow-xl"
+                className="mx-2 px-4 relative  overflow-hidden rounded-xl border-2 border-black bg-white shadow-xl"
               >
+                <h1 className="py-2 w-full text-center font-heading tracking-wider text-4xl">
+                  {movement.name.toUpperCase()}
+                </h1>
                 <video
-                  className="w-full h-full"
+                  className="w-full bg-white"
                   autoPlay
                   loop
                   muted
@@ -76,9 +78,6 @@ export default function VideoDisplay(props) {
                     }).data
                   )}
                 />
-                <h1 className=" absolute py-2 top-0 w-full text-center font-heading tracking-wider text-4xl ">
-                  {movement.name.toUpperCase()}
-                </h1>
               </div>
             </Fade>
           ) : (

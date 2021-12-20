@@ -1,6 +1,7 @@
 import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { ArrowDownIcon, ArrowUpIcon } from "@heroicons/react/solid";
 
 export default function MovementRow(props) {
   const [isEditing, setIsEditing] = React.useState(
@@ -133,45 +134,75 @@ export default function MovementRow(props) {
       </td>
 
       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-        {isEditing ? (
-          <div className="flex space-x-2">
-            <button
-              className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              onClick={() => {
-                formik.submitForm();
-              }}
-            >
-              Save
-            </button>
-            <button
-              className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-              onClick={() => {
-                const oldMovements = [...props.movements];
+        {" "}
+        <div className="flex space-x-2">
+          {isEditing ? (
+            <div>
+              <button
+                className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                onClick={() => {
+                  formik.submitForm();
+                }}
+              >
+                Save
+              </button>
+              <button
+                className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                onClick={() => {
+                  const oldMovements = [...props.movements];
 
-                const filtered = oldMovements.filter(function (
-                  value,
-                  index,
-                  arr
-                ) {
-                  return index !== props.movementIndex;
-                });
+                  const filtered = oldMovements.filter(function (
+                    value,
+                    index,
+                    arr
+                  ) {
+                    return index !== props.movementIndex;
+                  });
 
-                props.setMovements(filtered);
+                  props.setMovements(filtered);
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => {
+                setIsEditing(true);
               }}
+              className="text-indigo-600 hover:text-indigo-900"
             >
-              Delete
+              Edit
             </button>
-          </div>
-        ) : (
+          )}
+
           <button
             onClick={() => {
-              setIsEditing(true);
+              props.moveRowUp(props.movementIndex);
             }}
-            className="text-indigo-600 hover:text-indigo-900"
+            disabled={props.movementIndex === 0}
           >
-            Edit
+            <ArrowUpIcon
+              className={` h-5 w-5 ${
+                props.movementIndex === 0 ? "text-gray-300" : "text-blue-600"
+              }`}
+            />
           </button>
-        )}
+          <button
+            onClick={() => {
+              props.moveRowDown(props.movementIndex);
+            }}
+            disabled={props.movementIndex >= props.movements.length - 1}
+          >
+            <ArrowDownIcon
+              className={` h-5 w-5 ${
+                props.movementIndex >= props.movements.length - 1
+                  ? "text-gray-300"
+                  : "text-blue-600"
+              }`}
+            />
+          </button>
+        </div>
       </td>
     </tr>
   );

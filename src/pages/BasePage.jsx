@@ -23,12 +23,13 @@ export default function BasePage(props) {
   const upHandler = ({ key }) => {
     if (props.selectedWorkout != null) {
       const max = props.selectedWorkout.sections.length;
-      if (key === "ArrowRight") {
+
+      if (key === ".") {
         if (sectionIndex < max - 1) {
           setSectionIndex(sectionIndex + 1);
           setSelectedSection(props.selectedWorkout.sections[sectionIndex + 1]);
         }
-      } else if (key === "ArrowLeft") {
+      } else if (key === ",") {
         if (sectionIndex > 0) {
           setSectionIndex(sectionIndex - 1);
           setSelectedSection(props.selectedWorkout.sections[sectionIndex - 1]);
@@ -61,40 +62,38 @@ export default function BasePage(props) {
       ) : (
         <div />
       )}
-      <div className="flex flex-row w-full overflow-x-hidden h-full pt-16">
-        <div className="relative w-1/3 h-full flex flex-col ">
+      <div className="flex flex-row w-full overflow-x-hidden h-full pt-16 ">
+        <div className="relative w-1/3 h-full flex flex-col  ">
           {selectedSection != null ? (
             props.selectedWorkout.sections.map((section, index) => {
               return (
-                <div key={index}>
-                  <Fade>
-                    {sectionIndex === index ? (
-                      // <Fade className="h-full w-full">
-                      <div className="absolute flex flex-col h-full w-full ">
-                        <SectionDisplay
-                          selectedSection={
-                            props.selectedWorkout.sections[sectionIndex]
-                          }
-                        />
-                        <Timer
-                          selectedSection={
-                            props.selectedWorkout.sections[sectionIndex]
-                          }
-                          timers={
-                            props.selectedWorkout.timers != null
-                              ? props.selectedWorkout.timers
-                              : []
-                          }
-                        />
-                      </div>
-                    ) : (
-                      // </Fade>
-                      <div />
-                    )}
-                  </Fade>
-                </div>
+                <Fade key={index}>
+                  {sectionIndex === index ? (
+                    // <Fade className="h-full w-full">
+                    <SectionDisplay
+                      selectedSection={
+                        props.selectedWorkout.sections[sectionIndex]
+                      }
+                    />
+                  ) : (
+                    // </Fade>
+                    <div />
+                  )}
+                </Fade>
               );
             })
+          ) : (
+            <div />
+          )}
+
+          {props.selectedWorkout != null ? (
+            <Timer
+              timers={
+                props.selectedWorkout.timers != null
+                  ? props.selectedWorkout.timers
+                  : []
+              }
+            />
           ) : (
             <div />
           )}

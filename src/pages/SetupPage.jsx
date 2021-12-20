@@ -60,6 +60,14 @@ export default function SetupPage(props) {
     saveToJSON();
   };
 
+  // function sortBy(field) {
+  //   if (field === "name") {
+
+  //   } else if (field === "description") {
+
+  //   } else if (field === )
+  // }
+
   return (
     <div className="flex justify-center py-20">
       <div className="flex flex-col">
