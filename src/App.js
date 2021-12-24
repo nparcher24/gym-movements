@@ -14,6 +14,9 @@ import { useLiveQuery } from "dexie-react-hooks";
 import ProgressModal from "./components/ProgressModal";
 // import Temp from "./pages/Temp";
 import Timer from "./components/Timer";
+import NewSetupPage from "./pages/NewSetupPage";
+import NewAddWorkout from "./pages/NewAddWorkout";
+import VideoSearch from "./components/VideoSearch";
 const ldb = new Dexie("videos");
 ldb.version(1).stores({ videos: "++id,name,data" });
 
@@ -21,6 +24,7 @@ function App() {
   const [workouts, setWorkouts] = React.useState([
     // More people...
   ]);
+
   const [downloadProgress, setDownloadProgress] = React.useState(1.0);
 
   const [test, setTest] = React.useState(null);
@@ -42,16 +46,22 @@ function App() {
 
   React.useEffect(() => {
     const q = query(collection(db, "workouts"));
+
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const rawWorkouts = [];
       querySnapshot.forEach((doc) => {
         var aworkout = doc.data();
+        console.log(aworkout);
         aworkout["dateMade"] = aworkout.dateMade.toDate();
+        if (aworkout.workoutDate != null) {
+          // aworkout["workoutDate"] = "asdf";
+          aworkout["workoutDate"] = aworkout.workoutDate.toDate();
+        }
         aworkout["id"] = doc.id;
         rawWorkouts.push(aworkout);
       });
 
-      // console.log("Current workouts: ", workouts.join(", "));
+      console.log("Current workouts: ", workouts.join(", "));
       setWorkouts(rawWorkouts);
     });
     return () => {
@@ -165,11 +175,19 @@ function App() {
     <div>
       <Router>
         <Routes>
+          <Route
+            path="/test"
+            element={
+              <div className="w-96 mx-auto ">
+                <VideoSearch storage={storage} />
+              </div>
+            }
+          />
           <Route path="/timer" element={<Timer />} />
           <Route
             path="/setup"
             element={
-              <SetupPage
+              <NewSetupPage //</Router>SetupPage
                 workouts={workouts}
                 selectedWorkout={selectedWorkout}
                 setSelectedWorkout={setSelectedWorkout}

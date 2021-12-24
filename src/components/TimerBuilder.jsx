@@ -2,6 +2,7 @@ import React from "react";
 import TimerRow from "../components/TimerRow";
 import { PlusSmIcon as PlusSmIconSolid } from "@heroicons/react/solid";
 import { Dialog, Transition } from "@headlessui/react";
+import TimerTable from "./TimerTable";
 // import { useFormik } from "formik";
 // import * as Yup from "yup";
 
@@ -37,14 +38,6 @@ export default function TimerBuilder(props) {
     oldTimers[index] = newTimer;
     props.setTimers(oldTimers);
   };
-
-  if (props.sectionIndex != null) {
-    alert(props.sections[props.sectionIndex]);
-  }
-
-  React.useEffect(() => {
-    props.updateTimerNumbers();
-  }, []);
 
   return (
     <div>
@@ -88,112 +81,26 @@ export default function TimerBuilder(props) {
                 className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle max-w-7xl sm:w-full sm:p-6 overflow-y-auto"
               >
                 <div>
-                  <h1 className="mx-6 text-2xl mb-6">Timer Setup</h1>
-
                   <div className="flex flex-col rounded-md border-gray-300 border mx-6">
                     <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                       <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                         <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-                          <table className="min-w-full divide-y divide-gray-200 ">
-                            <thead className="bg-gray-50">
-                              <tr>
-                                <th
-                                  scope="col"
-                                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                >
-                                  Number
-                                </th>
-
-                                <th
-                                  scope="col"
-                                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                >
-                                  Duration
-                                </th>
-                                <th
-                                  scope="col"
-                                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                >
-                                  Direction
-                                </th>
-                                <th
-                                  scope="col"
-                                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                >
-                                  Sound
-                                </th>
-                                <th
-                                  scope="col"
-                                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                >
-                                  Show Number
-                                </th>
-                                <th
-                                  scope="col"
-                                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                >
-                                  Restart Number
-                                </th>
-                                <th
-                                  scope="col"
-                                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                >
-                                  Group
-                                </th>
-                                <th
-                                  scope="col"
-                                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                >
-                                  Auto Start
-                                </th>
-                                <th
-                                  scope="col"
-                                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                >
-                                  Start Countdown
-                                </th>
-                                <th
-                                  scope="col"
-                                  className="relative flex px-6 justify-end  py-3"
-                                >
-                                  <button
-                                    type="button"
-                                    onClick={addTimer}
-                                    className="inline-flex items-center border border-transparent shadow-sm text-sm font-medium rounded-md text-white hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-TADarkBlue"
-                                  >
-                                    <PlusSmIconSolid
-                                      className="h-10 w-10 text-TADarkBlue"
-                                      aria-hidden="true"
-                                    />
-                                  </button>
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {props.timers.map((timer, timerIndex) => (
-                                <TimerRow
-                                  key={timerIndex}
-                                  timer={timer}
-                                  timerIndex={timerIndex}
-                                  updateTimer={updateTimer}
-                                  {...props}
-                                />
-                              ))}
-                            </tbody>
-                          </table>
+                          <TimerTable timers={props.timers} {...props} />
                         </div>
                       </div>
                     </div>
                   </div>
-
-                  <div className="px-4 py-3 bg-gray-50 text-right sm:px-6 space-x-2">
-                    <button
-                      onClick={submit}
-                      className="bg-TADarkBlue border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-TABlue transition duration-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-TADarkBlue"
-                    >
-                      Save
-                    </button>
-                  </div>
+                </div>
+                <div className="flex flex-row w-full my-6 px-6">
+                  <button
+                    onClick={() => {
+                      // props.setTimers(timers);
+                      props.setShow(false);
+                    }}
+                    className="bg-TADarkBlue py-2 ml-auto hover:bg-blue-900 hover:shadow-xl text-white px-4 rounded-lg shadow-md duration-200 transition"
+                  >
+                    DONE
+                  </button>
                 </div>
               </div>
             </Transition.Child>

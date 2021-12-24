@@ -41,8 +41,7 @@ export default function SetupPage(props) {
   const saveToJSON = () => {};
 
   const saveWorkout = (workout) => {
-    //See if element already exists
-
+    //See if element already exist
     if (containsObject(workout, props.workouts)) {
       alert("EXISTS");
     } else {
@@ -60,27 +59,12 @@ export default function SetupPage(props) {
     saveToJSON();
   };
 
-  // function sortBy(field) {
-  //   if (field === "name") {
-
-  //   } else if (field === "description") {
-
-  //   } else if (field === )
-  // }
-
   return (
     <div className="flex justify-center py-20">
       <div className="flex flex-col">
         <div className="flex py-8 justify-between">
           <h1 className="text-3xl">Workout Selection</h1>
-          {/* <button
-            onClick={() => {
-              signOut();
-            }}
-            className="relative inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-TABlue hover:bg-TADarkBlue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-TADarkRed"
-          >
-            LOGOUT
-          </button> */}
+
           <button
             type="button"
             onClick={() => {
@@ -226,7 +210,6 @@ export default function SetupPage(props) {
                       </div>
                     </div>
                     <div className="mt-6 relative flex-1 px-4 sm:px-6">
-                      {/* Replace with your content */}
                       <AddWorkout
                         {...props}
                         saveWorkout={saveWorkout}
@@ -235,7 +218,6 @@ export default function SetupPage(props) {
                         updateWorkout={updateWorkout}
                         setShowAddWorkout={setOpen}
                       />
-                      {/* /End replace */}
                     </div>
                   </div>
                 </div>
