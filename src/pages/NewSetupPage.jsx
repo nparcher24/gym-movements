@@ -4,11 +4,11 @@ import { ThemeProvider } from "@material-ui/core";
 import { MuiTheme } from "../components/MuiTheme";
 import { useNavigate } from "react-router-dom";
 import { doc, deleteDoc } from "firebase/firestore";
-
+import { collection, query, onSnapshot } from "firebase/firestore";
 import { Dialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
-import AddWorkout from "./AddWorkout";
 import NewAddWorkout from "./NewAddWorkout";
+import { EyeOffIcon, EyeIcon } from "@heroicons/react/solid";
 
 export default function NewSetupPage(props) {
   const navigate = useNavigate();
@@ -32,6 +32,36 @@ export default function NewSetupPage(props) {
   const [open, setOpen] = React.useState(false);
   const [editWorkout, setEditWorkout] = React.useState(null);
   const [workoutIndex, setWorkoutIndex] = React.useState(null);
+  const [showHistorical, setShowHistorical] = React.useState(false);
+  const [workouts, setWorkouts] = React.useState([]);
+  const [filteredWorkouts, setFilteredWorkouts] = React.useState([]);
+
+  React.useEffect(() => {
+    const q = query(collection(props.db, "workouts"));
+
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const rawWorkouts = [];
+      querySnapshot.forEach((doc) => {
+        var aworkout = doc.data();
+        // console.log(aworkout);
+        aworkout["dateMade"] = aworkout.dateMade.toDate();
+        if (aworkout.workoutDate != null) {
+          // aworkout["workoutDate"] = "asdf";
+          aworkout["workoutDate"] = aworkout.workoutDate.toDate();
+        }
+        aworkout["id"] = doc.id;
+        rawWorkouts.push(aworkout);
+      });
+
+      // console.log("Current workouts: ", workouts.join(", "));
+      setWorkouts(rawWorkouts);
+      console.log("JUST FETCHED ALL WORKOUTS");
+      filterWorkouts(rawWorkouts, showHistorical);
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, [props.db]);
 
   function containsObject(obj, list) {
     var i;
@@ -47,7 +77,7 @@ export default function NewSetupPage(props) {
     setOpen(false);
     // See if element already exist
 
-    if (containsObject(workout, props.workouts)) {
+    if (containsObject(workout, workouts)) {
       //   alert("EXISTS");
     } else {
       //   alert("DOESNT EXIST");
@@ -60,15 +90,35 @@ export default function NewSetupPage(props) {
     props.updateWorkout(oldWorkout, index);
   };
 
+  function toggleOldWorkouts() {
+    const oldWorkouts = showHistorical;
+    setShowHistorical(!oldWorkouts);
+    filterWorkouts(workouts, !oldWorkouts);
+  }
+
+  function filterWorkouts(theWorkouts, showThem) {
+    if (showThem) {
+      setFilteredWorkouts(theWorkouts);
+    } else {
+      var d = new Date();
+      d.setDate(d.getDate() - 1);
+      console.log("YESTERDAY IS: ", d);
+      const filtered = theWorkouts.filter(
+        (workout) => workout.workoutDate !== null && workout.workoutDate >= d
+      );
+      setFilteredWorkouts(filtered);
+    }
+  }
+
   return (
     <div>
       <div className="flex justify-center px-6 py-6  bg-gray-100 h-screen">
         <div className="w-full max-w-6xl my-auto z-0">
           <ThemeProvider theme={MuiTheme}>
             <MaterialTable
-              title="WOROUTS"
+              title="WORKOUTS"
               columns={tableColumns}
-              data={props.workouts}
+              data={filteredWorkouts}
               actions={[
                 {
                   icon: "edit",
@@ -112,7 +162,8 @@ export default function NewSetupPage(props) {
                   },
                   tooltip: "Start Workout",
                   onClick: (event, rowData) => {
-                    props.setSelectedWorkout(rowData);
+                    props.setSelectedWID(rowData.id);
+                    // console.log(rowData.id);
                     navigate("/");
                   },
                 },
@@ -124,6 +175,24 @@ export default function NewSetupPage(props) {
                     setEditWorkout(null);
                     // setWorkoutIndex(workoutIdx);
                     setOpen(true);
+                  },
+                },
+                {
+                  icon: () => (
+                    <div>
+                      {showHistorical ? (
+                        <EyeIcon className="h-6 w-6 text-black" />
+                      ) : (
+                        <EyeOffIcon className="h-6 w-6 text-black" />
+                      )}
+                    </div>
+                  ),
+                  tooltip: showHistorical
+                    ? "HIDE OLD WOROUTS"
+                    : "SHOW OLD WORKOUTS",
+                  isFreeAction: true,
+                  onClick: () => {
+                    toggleOldWorkouts();
                   },
                 },
               ]}

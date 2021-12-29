@@ -8,7 +8,7 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
-import { collection, query, onSnapshot } from "firebase/firestore";
+import { collection, query, onSnapshot, doc, getDoc } from "firebase/firestore";
 import Dexie from "dexie";
 import { useLiveQuery } from "dexie-react-hooks";
 import ProgressModal from "./components/ProgressModal";
@@ -21,14 +21,6 @@ const ldb = new Dexie("videos");
 ldb.version(1).stores({ videos: "++id,name,data" });
 
 function App() {
-  const [workouts, setWorkouts] = React.useState([
-    // More people...
-  ]);
-
-  const [downloadProgress, setDownloadProgress] = React.useState(1.0);
-
-  const [test, setTest] = React.useState(null);
-
   //Fetch workouts from firestore
   const firebaseConfig = {
     apiKey: "AIzaSyD3S0yeE5zI5gaA-IaC2HE8ZEd9wdiyvSs",
@@ -40,35 +32,12 @@ function App() {
     measurementId: "G-QDCWRPP56R",
   };
 
+  const [downloadProgress, setDownloadProgress] = React.useState(1.0);
   const firebaseApp = firebase.initializeApp(firebaseConfig);
   const db = getFirestore();
   const storage = getStorage(firebaseApp);
-
-  React.useEffect(() => {
-    const q = query(collection(db, "workouts"));
-
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const rawWorkouts = [];
-      querySnapshot.forEach((doc) => {
-        var aworkout = doc.data();
-        console.log(aworkout);
-        aworkout["dateMade"] = aworkout.dateMade.toDate();
-        if (aworkout.workoutDate != null) {
-          // aworkout["workoutDate"] = "asdf";
-          aworkout["workoutDate"] = aworkout.workoutDate.toDate();
-        }
-        aworkout["id"] = doc.id;
-        rawWorkouts.push(aworkout);
-      });
-
-      console.log("Current workouts: ", workouts.join(", "));
-      setWorkouts(rawWorkouts);
-    });
-    return () => {
-      unsubscribe();
-    };
-  }, []);
-
+  const allItems = useLiveQuery(() => ldb.videos.toArray(), []);
+  const [selectedWID, setSelectedWID] = React.useState(null);
   const [selectedWorkout, setSelectedWorkout] = React.useState(null);
 
   const uiConfig = {
@@ -92,7 +61,33 @@ function App() {
     return () => unregisterAuthObserver(); // Make sure we un-register Firebase observers when the component unmounts.
   }, []);
 
-  const allItems = useLiveQuery(() => ldb.videos.toArray(), []);
+  React.useEffect(() => {
+    async function fetchMyWorkout() {
+      if (selectedWID !== null) {
+        const q = query(collection(db, "workouts"));
+        const docRef = doc(db, "workouts", selectedWID);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          // console.log("Document Data: ", docSnap.data());
+          var aworkout = docSnap.data();
+          // console.log(aworkout);
+          aworkout["dateMade"] = aworkout.dateMade.toDate();
+          if (aworkout.workoutDate != null) {
+            // aworkout["workoutDate"] = "asdf";
+            aworkout["workoutDate"] = aworkout.workoutDate.toDate();
+          }
+          aworkout["id"] = doc.id;
+
+          setSelectedWorkout(aworkout);
+          // console.log(aworkout);
+        } else {
+          console.log("NO SUCH DOCUMENT");
+        }
+      }
+    }
+
+    fetchMyWorkout();
+  }, [selectedWID]);
 
   React.useEffect(() => {
     //Download all new
@@ -134,7 +129,6 @@ function App() {
               xhr.responseType = "blob";
               xhr.onload = (event) => {
                 const blob = xhr.response;
-                setTest(blob);
                 //Persist locally
                 event.preventDefault();
                 ldb.videos.add({ name: movement.videoName, data: blob });
@@ -188,11 +182,11 @@ function App() {
             path="/setup"
             element={
               <NewSetupPage //</Router>SetupPage
-                workouts={workouts}
                 selectedWorkout={selectedWorkout}
-                setSelectedWorkout={setSelectedWorkout}
+                setSelectedWID={setSelectedWID}
                 db={db}
                 storage={storage}
+                setSele
               />
             }
           />
@@ -203,7 +197,6 @@ function App() {
                 selectedWorkout={selectedWorkout}
                 allItems={allItems}
                 ldb={ldb}
-                test={test}
               />
             }
           />

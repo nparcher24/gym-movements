@@ -1,4 +1,5 @@
-import { createTheme } from "@material-ui/core";
+// import { createMuiTheme } from "@mui/core";
+import { createTheme } from "@mui/material/styles";
 
 export const MuiTheme = createTheme({
   palette: {
