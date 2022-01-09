@@ -12,29 +12,31 @@ import { EyeOffIcon, EyeIcon } from "@heroicons/react/solid";
 
 export default function NewSetupPage(props) {
   const navigate = useNavigate();
-
-  let tableColumns = [
-    { title: "Name", field: "name" },
-    {
-      title: "Workout Date",
-      field: "workoutDate",
-      type: "date",
-      defaultSort: "desc",
-    },
-    { title: "Description", field: "description" },
-    {
-      title: "Last Updated",
-      field: "dateMade",
-      type: "date",
-    },
-  ];
-
   const [open, setOpen] = React.useState(false);
   const [editWorkout, setEditWorkout] = React.useState(null);
   const [workoutIndex, setWorkoutIndex] = React.useState(null);
   const [showHistorical, setShowHistorical] = React.useState(false);
   const [workouts, setWorkouts] = React.useState([]);
   const [filteredWorkouts, setFilteredWorkouts] = React.useState([]);
+
+  let tableColumns = [
+    { title: "Name", field: "name" },
+
+    {
+      title: "Workout Date",
+      field: "workoutDate",
+      type: "date",
+      defaultSort: "desc",
+    },
+
+    { title: "Description", field: "description" },
+
+    {
+      title: "Last Updated",
+      field: "dateMade",
+      type: "date",
+    },
+  ];
 
   React.useEffect(() => {
     const q = query(collection(props.db, "workouts"));
@@ -58,6 +60,7 @@ export default function NewSetupPage(props) {
       console.log("JUST FETCHED ALL WORKOUTS");
       filterWorkouts(rawWorkouts, showHistorical);
     });
+
     return () => {
       unsubscribe();
     };
@@ -112,7 +115,7 @@ export default function NewSetupPage(props) {
 
   return (
     <div>
-      <div className="flex justify-center px-6 py-6  bg-gray-100 h-screen">
+      <div className="flex justify-center px-6 py-6 bg-gray-100 h-screen">
         <div className="w-full max-w-6xl my-auto z-0">
           <ThemeProvider theme={MuiTheme}>
             <MaterialTable

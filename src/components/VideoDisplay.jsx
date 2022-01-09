@@ -8,23 +8,16 @@ export default function VideoDisplay(props) {
   React.useState(() => {
     const filtered = props.selectedSection.movements.filter((movement) => {
       var exists = false;
-      props.allItems.forEach((item) => {
+      props.downloadedVideos.forEach((item) => {
         if (movement.videoName === item.name) {
           exists = true;
         }
       });
       return exists;
     });
+
     setVideos(filtered);
-  }, [props.selectedSection.movements]);
-
-  //   const [vid, setVid] = React.useState(props.allItems.find(hasName).data);
-
-  // function hasName(localVid) {
-  //   return (
-  //     localVid.name === props.selectedSection.movements[playIndex].videoName
-  //   );
-  // }
+  }, [props.selectedSection, props.downloadedVideos]);
 
   setTimeout(function () {
     nextVideo();
@@ -46,7 +39,7 @@ export default function VideoDisplay(props) {
     <div className="absolute inset-0">
       <div className="flex flex-wrap -mx-2 overflow-hidden justify-center pr-28 pl-5 items-center h-full ">
         {videos.map((movement, index) => {
-          return props.allItems.find((obj) => {
+          return props.downloadedVideos.find((obj) => {
             return obj.name === movement.videoName;
           }) != null &&
             index >= playIndex * 4 &&
@@ -73,7 +66,7 @@ export default function VideoDisplay(props) {
                   loop
                   muted
                   src={window.URL.createObjectURL(
-                    props.allItems.find((obj) => {
+                    props.downloadedVideos.find((obj) => {
                       return obj.name === movement.videoName;
                     }).data
                   )}

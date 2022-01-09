@@ -39,6 +39,8 @@ function App() {
   const allItems = useLiveQuery(() => ldb.videos.toArray(), []);
   const [selectedWID, setSelectedWID] = React.useState(null);
   const [selectedWorkout, setSelectedWorkout] = React.useState(null);
+  const [downloadedVideos, setDownloadedVideos] = React.useState([]);
+  const [finished, setFinished] = React.useState(false);
 
   const uiConfig = {
     // Popup signin flow rather than redirect flow.
@@ -64,7 +66,6 @@ function App() {
   React.useEffect(() => {
     async function fetchMyWorkout() {
       if (selectedWID !== null) {
-        const q = query(collection(db, "workouts"));
         const docRef = doc(db, "workouts", selectedWID);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
@@ -78,7 +79,9 @@ function App() {
           }
           aworkout["id"] = doc.id;
 
+          // console.log("JUST SET THE WORKOUT");
           setSelectedWorkout(aworkout);
+
           // console.log(aworkout);
         } else {
           console.log("NO SUCH DOCUMENT");
@@ -89,19 +92,23 @@ function App() {
     fetchMyWorkout();
   }, [selectedWID]);
 
+  // function addToDownloadedVids(video) {
+  //   setDownloadedVideos((old) => [...old, video]);
+  // }
+
   React.useEffect(() => {
     //Download all new
     if (selectedWorkout !== null) {
       //Create a list of files to download
       setDownloadProgress(0.0);
 
-      var tempNames = [];
+      console.log("STARTED DOWNLOADING ALL VIDEOS");
 
       //Delete all local items
-      allItems.map((item) => {
-        ldb.videos.delete(item.id);
-        return null;
-      });
+      // allItems.map((item) => {
+      //   ldb.videos.delete(item.id);
+      //   return null;
+      // });
 
       var total = 0;
       //Determine total number of videos to download
@@ -112,9 +119,10 @@ function App() {
         total = total + aSection.length;
         return null;
       });
-      // console.log("TOTAL WORKOUTS TO DOWNLOAD: ", total);
 
       var progress = 0.0;
+
+      setDownloadedVideos([]);
 
       selectedWorkout.sections.forEach((section) => {
         section.movements.forEach((movement) => {
@@ -131,23 +139,30 @@ function App() {
                 const blob = xhr.response;
                 //Persist locally
                 event.preventDefault();
-                ldb.videos.add({ name: movement.videoName, data: blob });
-                // console.log(blob);
-                // console.log("DOWNLOADED: " + movement.videoName + " from " + url);
+
+                setDownloadedVideos((old) => [
+                  ...old,
+                  { name: movement.videoName, data: blob },
+                ]);
+
                 progress = progress + 1 / total;
+
+                if (progress >= 1.0) {
+                  setFinished(true);
+                }
+
                 setDownloadProgress(progress);
-                // console.log("Progress: ", progress);
               };
+
               xhr.open("GET", url);
               xhr.send();
-
-              tempNames.push(url);
             });
             return null;
           }
         });
         return null;
       });
+
       // console.log("Names to download: ", tempNames);
     }
   }, [selectedWorkout]);
@@ -194,15 +209,17 @@ function App() {
             path="/"
             element={
               <BasePage
+                downloadedVideos={downloadedVideos}
                 selectedWorkout={selectedWorkout}
                 allItems={allItems}
+                finished={finished}
                 ldb={ldb}
               />
             }
           />
         </Routes>
       </Router>
-      {downloadProgress < 1.0 ? (
+      {downloadProgress < 0.99 ? (
         <ProgressModal progress={downloadProgress} />
       ) : (
         <div />

@@ -7,18 +7,10 @@ import { useNavigate } from "react-router-dom";
 import ProgressBar from "../components/ProgressBar";
 import Timer from "../components/Timer";
 
-// import { useLiveQuery } from "dexie-react-hooks";
-
 export default function BasePage(props) {
   const navigate = useNavigate();
 
   const [sectionIndex, setSectionIndex] = React.useState(0);
-
-  const [selectedSection, setSelectedSection] = React.useState(
-    props.selectedWorkout != null
-      ? props.selectedWorkout.sections[sectionIndex]
-      : null
-  );
 
   const upHandler = ({ key }) => {
     if (props.selectedWorkout != null) {
@@ -27,12 +19,10 @@ export default function BasePage(props) {
       if (key === ".") {
         if (sectionIndex < max - 1) {
           setSectionIndex(sectionIndex + 1);
-          setSelectedSection(props.selectedWorkout.sections[sectionIndex + 1]);
         }
       } else if (key === ",") {
         if (sectionIndex > 0) {
           setSectionIndex(sectionIndex - 1);
-          setSelectedSection(props.selectedWorkout.sections[sectionIndex - 1]);
         }
       }
     }
@@ -40,7 +30,6 @@ export default function BasePage(props) {
 
   React.useEffect(() => {
     window.addEventListener("keyup", upHandler);
-
     return () => {
       window.removeEventListener("keyup", upHandler);
     };
@@ -48,7 +37,9 @@ export default function BasePage(props) {
 
   return (
     <div className="h-screen flex flex-col overflow-y-hidden bg-gray-200 bg-opacity-20">
-      {selectedSection != null ? (
+      {(props.selectedWorkout != null
+        ? props.selectedWorkout.sections[sectionIndex]
+        : null) != null ? (
         <div className="w-full h-full absolute overflow-y-hidden ">
           <img
             src={LogoImage}
@@ -64,19 +55,19 @@ export default function BasePage(props) {
       )}
       <div className="flex flex-row w-full overflow-x-hidden h-full pt-16 ">
         <div className="relative w-1/3 h-full flex flex-col  ">
-          {selectedSection != null ? (
+          {(props.selectedWorkout != null
+            ? props.selectedWorkout.sections[sectionIndex]
+            : null) != null ? (
             props.selectedWorkout.sections.map((section, index) => {
               return (
                 <Fade key={index}>
                   {sectionIndex === index ? (
-                    // <Fade className="h-full w-full">
                     <SectionDisplay
                       selectedSection={
                         props.selectedWorkout.sections[sectionIndex]
                       }
                     />
                   ) : (
-                    // </Fade>
                     <div />
                   )}
                 </Fade>
@@ -100,7 +91,9 @@ export default function BasePage(props) {
         </div>
 
         <div className="w-2/3 flex flex-col h-full relative ">
-          {selectedSection != null ? (
+          {(props.selectedWorkout != null
+            ? props.selectedWorkout.sections[sectionIndex]
+            : null) != null ? (
             props.selectedWorkout.sections.map((section, index) => {
               return (
                 <div key={index}>
