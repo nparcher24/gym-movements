@@ -1,5 +1,5 @@
 import React from "react";
-import { PlusSmIcon as PlusSmIconSolid } from "@heroicons/react/solid";
+import { VideoCameraIcon } from "@heroicons/react/outline";
 import { AutoField, AutoForm, SubmitField } from "uniforms-material";
 import MaterialTable, { MTableBodyRow } from "@material-table/core";
 import Ajv from "ajv";
@@ -81,6 +81,32 @@ export default function NewAddSection(props) {
     setMovements(oldMovement);
   }
 
+  function updateTimerNumbers(oldMovements) {
+    console.log("Called Update Movements");
+    const newMovements = [];
+    var lastIndex = 1;
+    oldMovements.forEach((movement) => {
+      const oldMovement = movement;
+      if (oldMovement.restartNumber) {
+        lastIndex = 2;
+        oldMovement.number = 1;
+        oldMovement.showNumber = true;
+      } else if (oldMovement.showNumber) {
+        if (oldMovement.group) {
+          oldMovement.number = lastIndex - 1;
+        } else {
+          oldMovement.number = lastIndex;
+          lastIndex = lastIndex + 1;
+        }
+      } else if (!oldMovement.showNumber) {
+        oldMovement.number = null;
+      }
+      newMovements.push(oldMovement);
+    });
+    return newMovements;
+    // setTimers(newTimers);
+  }
+
   return (
     <div>
       <AutoForm
@@ -89,9 +115,9 @@ export default function NewAddSection(props) {
         onSubmit={(val) => {
           const values = val;
           values["movements"] = [...movements];
-          // values["timers"] = [...timers];
-          const oldSections = [...props.sections];
-          if (props.sectionIndex == null) {
+
+          var oldSections = [...props.sections];
+          if (props.sectionIndex === null) {
             oldSections.push(values);
             props.setSections(oldSections);
           } else {
@@ -99,7 +125,6 @@ export default function NewAddSection(props) {
             props.setSections(oldSections);
           }
           props.setShowAddSection(false);
-          //   alert(JSON.stringify(values, null, 2));
         }}
       >
         <AutoField name="name" />
@@ -109,32 +134,56 @@ export default function NewAddSection(props) {
           <MaterialTable
             title="MOVEMENTS"
             columns={[
+              {
+                title: "#",
+                field: "number",
+                type: "numeric",
+                editable: "never",
+              },
               { title: "NAME", field: "name", type: "string" },
               { title: "DURATION", field: "duration", type: "string" },
               { title: "EQUIPMENT", field: "equipment", type: "string" },
-              { title: "VIDEO", field: "videoName", editable: false },
+              {
+                title: "SHOW NUMBER",
+                field: "showNumber",
+                type: "boolean",
+                initialEditValue: true,
+              },
+              { title: "VIDEO", field: "videoName", editable: "never" },
             ]}
             data={movements}
             options={{
               search: false,
               actionsColumnIndex: -1,
-              // pageSizeOptions: [],
-              // pageSize: 10,
             }}
             editable={{
+              onRowAdd: (changes) => {
+                return new Promise((resolve, reject) => {
+                  if (Object.keys(changes).length > 0) {
+                    const oldMovements = [...movements];
+                    const newMovement = changes;
+                    // newMovement["showNumber"] = !changes.showNumber;
+                    oldMovements.push(newMovement);
+                    const newMovements = updateTimerNumbers(oldMovements);
+                    setMovements(newMovements);
+                  }
+                  resolve();
+                });
+              },
               onBulkUpdate: (changes) => {
                 return new Promise((resolve, reject) => {
                   if (Object.keys(changes).length > 0) {
                     const oldMovements = [...movements];
                     Object.keys(changes).forEach((index) => {
                       const changedMovement = changes[index].newData;
+                      delete changedMovement["tableData"];
                       oldMovements[index] = changedMovement;
                       console.log(changedMovement);
                     });
-
-                    setMovements(oldMovements);
-                    resolve();
+                    const newMovements = updateTimerNumbers(oldMovements);
+                    setMovements(newMovements);
                   }
+                  resolve();
                 });
               },
               onRowDelete: (oldData) =>
@@ -142,8 +191,8 @@ export default function NewAddSection(props) {
                   // console.log(oldData);
                   var oldMovements = [...movements];
                   oldMovements.splice(oldData.tableData.id, 1);
-
-                  setMovements(oldMovements);
+                  const newMovements = updateTimerNumbers(oldMovements);
+                  setMovements(newMovements);
                   resolve();
                 }),
             }}
@@ -175,31 +224,32 @@ export default function NewAddSection(props) {
               ),
             }} // components
             actions={[
-              {
-                icon: "add",
-                tooltip: "Add Section",
-                isFreeAction: true,
-                onClick: (event) => {
-                  setMovements([
-                    ...movements,
-                    {
-                      name: "",
-                      duration: "",
-                      equipment: "",
-                      videoName: "NONE",
-                    },
-                  ]);
-                },
-              },
+              // {
+              //   icon: "add",
+              //   tooltip: "Add Section",
+              //   isFreeAction: true,
+              //   onClick: (event) => {
+              //     setMovements([
+              //       ...movements,
+              //       {
+              //         name: "",
+              //         duration: "",
+              //         equipment: "",
+              //         videoName: "NONE",
+              //       },
+              //     ]);
+              //   },
+              // },
               {
                 icon: () => {
                   return (
-                    <button
-                      type="button"
-                      className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-TADarkBlue bg-indigo-100 "
-                    >
-                      CHOOSE VIDEO
-                    </button>
+                    <VideoCameraIcon className="h-6 w-6" />
+                    // <button
+                    //   type="button"
+                    //   className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-TADarkBlue bg-indigo-100 "
+                    // >
+                    //   CHOOSE VIDEO
+                    // </button>
                   );
                 },
                 tooltip: "Select Video",

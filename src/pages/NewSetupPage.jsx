@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { doc, deleteDoc } from "firebase/firestore";
 import { collection, query, onSnapshot } from "firebase/firestore";
 import { Dialog, Transition } from "@headlessui/react";
-import { XIcon } from "@heroicons/react/outline";
+import { XIcon, PlayIcon } from "@heroicons/react/solid";
 import NewAddWorkout from "./NewAddWorkout";
 import { EyeOffIcon, EyeIcon } from "@heroicons/react/solid";
 
@@ -26,7 +26,7 @@ export default function NewSetupPage(props) {
       title: "Workout Date",
       field: "workoutDate",
       type: "date",
-      defaultSort: "desc",
+      defaultSort: "asc",
     },
 
     { title: "Description", field: "description" },
@@ -155,12 +155,13 @@ export default function NewSetupPage(props) {
                 {
                   icon: () => {
                     return (
-                      <div
-                        type="button"
-                        className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-TADarkBlue bg-indigo-100 "
-                      >
-                        START
-                      </div>
+                      <PlayIcon className="h-6 w-6" />
+                      // <div
+                      //   type="button"
+                      //   className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-TADarkBlue bg-indigo-100 "
+                      // >
+                      //   START
+                      // </div>
                     );
                   },
                   tooltip: "Start Workout",
@@ -231,7 +232,7 @@ export default function NewSetupPage(props) {
                     <div className="px-4 sm:px-6">
                       <div className="flex items-start justify-between">
                         <Dialog.Title className="text-2xl tracking-wider font-bold text-gray-900">
-                          ADD WORKOUT
+                          WORKOUT
                         </Dialog.Title>
                         <div className="ml-3 h-7 flex items-center">
                           <button

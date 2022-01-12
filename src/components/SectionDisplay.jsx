@@ -30,7 +30,10 @@ export default function SectionDisplay(props) {
                       : "text-3xl"
                   } font-extrabold inline`}
                 >
-                  {index + 1 + "  -  "}
+                  {
+                    movement.showNumber ? movement.number + " - " : ""
+                    // index + 1 + "  -  "
+                  }
                 </h1>
 
                 <h1

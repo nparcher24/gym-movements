@@ -1,3 +1,4 @@
+import { DocumentDuplicateIcon } from "@heroicons/react/outline";
 import MaterialTable from "@material-table/core";
 import React from "react";
 
@@ -74,10 +75,10 @@ export default function TimerTable(props) {
       ...props.timers,
       {
         countDown: true,
-        totalTime: 0,
+        totalTime: 1,
         sound: true,
         repeat: false,
-        showNumber: false,
+        showNumber: true,
         restartNumber: false,
         number: null,
         group: false,
@@ -86,7 +87,9 @@ export default function TimerTable(props) {
         date: Date(),
       },
     ];
-    props.setTimers(oldTimers);
+    console.log(oldTimers);
+    const newTimers = updateTimerNumbers(oldTimers);
+    props.setTimers(newTimers);
   };
 
   function updateTimerNumbers(oldTimers) {
@@ -123,7 +126,7 @@ export default function TimerTable(props) {
     <MaterialTable
       title="Timers"
       columns={columns}
-      data={props.timers}
+      data={Array.from(props.timers)}
       localization={{
         header: {
           actions: "",
@@ -135,7 +138,34 @@ export default function TimerTable(props) {
           icon: "add",
           tooltip: "Add Timer",
           isFreeAction: true,
-          onClick: addTimer,
+          onClick: () => {
+            addTimer();
+          },
+        },
+        // {
+        //   icon: "delete",
+        //   tooltip: "Delete Timer",
+        //   onClick: (event, rowData) => {
+        //     alert("adlifjaldsjkf");
+        //     // const oldTimers = props.timers;
+        //     // oldTimers.splice(rowData.tableData.id, 1);
+        //     // props.setTimers(oldTimers);
+        //   },
+        // },
+        {
+          icon: () => {
+            return <DocumentDuplicateIcon className="h-6 w-6" />;
+          },
+          tooltip: "Duplicate Timer",
+          onClick: (event, rowData) => {
+            console.log("Duplicate" + rowData.tableData.id);
+            const oldTimers = [...props.timers];
+            const newTimer = oldTimers[rowData.tableData.id];
+            oldTimers.splice(rowData.tableData.id, 0, newTimer);
+            const updateTimers = updateTimerNumbers(oldTimers);
+
+            props.setTimers(updateTimers);
+          },
         },
       ]}
       editable={{
@@ -146,11 +176,14 @@ export default function TimerTable(props) {
             if (Object.keys(changes).length > 0) {
               const oldTimers = [...props.timers];
               Object.keys(changes).forEach((index) => {
+                console.log(index);
                 const changedTimer = changes[index].newData;
+                delete changedTimer["tableData"];
                 oldTimers[index] = changedTimer;
                 console.log(changedTimer);
               });
               const ts = updateTimerNumbers(oldTimers);
+              console.log(ts);
 
               props.setTimers(ts);
             }
@@ -159,12 +192,12 @@ export default function TimerTable(props) {
 
         onRowDelete: (oldData) =>
           new Promise((resolve, reject) => {
+            console.log("delete ");
             console.log(oldData);
-            var oldTimers = [...props.timers];
+            const oldTimers = [...props.timers];
             oldTimers.splice(oldData.tableData.id, 1);
-
-            props.setTimers(oldTimers);
-            // setTimers([...timers].splice(oldData.tableData.id, 1));
+            const updates = updateTimerNumbers(oldTimers);
+            props.setTimers(updates);
             resolve();
           }),
       }}

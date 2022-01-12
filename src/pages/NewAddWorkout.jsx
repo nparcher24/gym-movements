@@ -11,6 +11,8 @@ import { doc, setDoc, addDoc, collection, deleteDoc } from "firebase/firestore";
 import MaterialTable, { MTableBodyRow } from "@material-table/core";
 import NewAddSection from "../components/NewAddSection";
 import { Dialog, Transition } from "@headlessui/react";
+import { DocumentDuplicateIcon } from "@heroicons/react/outline";
+import { v4 as uuidv4 } from "uuid";
 
 const schema = {
   title: "Workout",
@@ -47,23 +49,7 @@ export default function NewAddWorkout(props) {
     props.workout?.sections != null ? props.workout.sections : []
   );
   const [timers, setTimers] = React.useState(
-    props.workout?.timers != null
-      ? props.workout.timers
-      : [
-          {
-            countDown: true,
-            totalTime: "",
-            sound: true,
-            repeat: false,
-            showNumber: false,
-            restartNumber: false,
-            number: null,
-            group: false,
-            startCount: false,
-            autoStart: true,
-            date: Date(),
-          },
-        ]
+    props.workout?.timers != null ? props.workout.timers : []
   );
 
   const DragState = {
@@ -116,7 +102,6 @@ export default function NewAddWorkout(props) {
           values.workoutDate = moment(val.workoutDate, "YYYY-MM-DD").toDate();
           values["dateMade"] = new Date();
 
-          //   alert(JSON.stringify(newVal));
           values["sections"] = [...sections];
           values["timers"] = [...timers];
 
@@ -152,16 +137,15 @@ export default function NewAddWorkout(props) {
             options={{
               search: false,
               actionsColumnIndex: -1,
-              pageSizeOptions: [],
-              pageSize: 10,
+              // pageSizeOptions: [],
+              // pageSize: 5,
             }}
             editable={{
               onRowDelete: (oldData) =>
                 new Promise((resolve, reject) => {
                   // console.log(oldData);
-                  var oldSections = [...sections];
+                  const oldSections = [...sections];
                   oldSections.splice(oldData.tableData.id, 1);
-
                   setSections(oldSections);
                   resolve();
                 }),
@@ -202,15 +186,31 @@ export default function NewAddWorkout(props) {
                   setSelectedSection(null);
                   setSelectedSectionIndex(null);
                   setShowAddSection(true);
+                  console.log(sections);
                 },
               },
               {
                 icon: "edit",
                 tooltip: "Edit Section",
                 onClick: (event, rowData) => {
-                  setSelectedSection(rowData);
+                  // alert(JSON.stringify(rowData.tableData));
+                  setSelectedSection(sections[rowData.tableData.id]);
+
                   setSelectedSectionIndex(rowData.tableData.id);
+                  // alert(JSON.stringify(rowData.tableData.id));
                   setShowAddSection(true);
+                },
+              },
+              {
+                icon: () => {
+                  return <DocumentDuplicateIcon className="h-6 w-6" />;
+                },
+                tooltip: "Duplicate Section",
+                onClick: (event, rowData) => {
+                  const oldSections = [...sections];
+                  const newSection = sections[rowData.tableData.id];
+                  oldSections.splice(rowData.tableData.id, 0, newSection);
+                  setSections(oldSections);
                 },
               },
             ]}

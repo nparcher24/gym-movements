@@ -11,6 +11,7 @@ export default function BasePage(props) {
   const navigate = useNavigate();
 
   const [sectionIndex, setSectionIndex] = React.useState(0);
+  const [isStarted, setIsStarted] = React.useState(false);
 
   const upHandler = ({ key }) => {
     if (props.selectedWorkout != null) {
@@ -54,7 +55,7 @@ export default function BasePage(props) {
         <div />
       )}
       <div className="flex flex-row w-full overflow-x-hidden h-full pt-16 ">
-        <div className="relative w-1/3 h-full flex flex-col  ">
+        <div className="relative w-1/3 h-full flex flex-col">
           {(props.selectedWorkout != null
             ? props.selectedWorkout.sections[sectionIndex]
             : null) != null ? (
