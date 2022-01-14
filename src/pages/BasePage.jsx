@@ -6,12 +6,14 @@ import LogoImage from "../assets/darklogo.png";
 import { useNavigate } from "react-router-dom";
 import ProgressBar from "../components/ProgressBar";
 import Timer from "../components/Timer";
+import SummaryPage from "./SummaryPage";
 
 export default function BasePage(props) {
   const navigate = useNavigate();
 
-  const [sectionIndex, setSectionIndex] = React.useState(0);
+  const [sectionIndex, setSectionIndex] = React.useState(-1);
   const [isStarted, setIsStarted] = React.useState(false);
+  const [showSummary, setShowSummary] = React.useState(true);
 
   const upHandler = ({ key }) => {
     if (props.selectedWorkout != null) {
@@ -20,10 +22,16 @@ export default function BasePage(props) {
       if (key === ".") {
         if (sectionIndex < max - 1) {
           setSectionIndex(sectionIndex + 1);
+          if (sectionIndex + 1 > -1) {
+            setShowSummary(false);
+          }
         }
       } else if (key === ",") {
-        if (sectionIndex > 0) {
+        if (sectionIndex > -1) {
           setSectionIndex(sectionIndex - 1);
+          if (sectionIndex - 1 === -1) {
+            setShowSummary(true);
+          }
         }
       }
     }
@@ -38,6 +46,12 @@ export default function BasePage(props) {
 
   return (
     <div className="h-screen flex flex-col overflow-y-hidden bg-gray-200 bg-opacity-20">
+      {showSummary ? (
+        <SummaryPage selectedWorkout={props.selectedWorkout} />
+      ) : (
+        <div />
+      )}
+
       {(props.selectedWorkout != null
         ? props.selectedWorkout.sections[sectionIndex]
         : null) != null ? (
@@ -78,7 +92,7 @@ export default function BasePage(props) {
             <div />
           )}
 
-          {props.selectedWorkout != null ? (
+          {props.selectedWorkout != null && !showSummary ? (
             <Timer
               timers={
                 props.selectedWorkout.timers != null
@@ -130,7 +144,7 @@ export default function BasePage(props) {
             </button>
           </div>
         </div>
-      ) : (
+      ) : !showSummary ? (
         <button
           onClick={() => {
             navigate("/setup");
@@ -144,6 +158,8 @@ export default function BasePage(props) {
             className="mx-auto top-0 mt-20"
           />
         </button>
+      ) : (
+        <div />
       )}
     </div>
   );

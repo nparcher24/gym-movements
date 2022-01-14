@@ -149,7 +149,12 @@ export default function NewAddSection(props) {
                 type: "boolean",
                 initialEditValue: true,
               },
-              { title: "VIDEO", field: "videoName", editable: "never" },
+              {
+                title: "VIDEO",
+                field: "videoName",
+                editable: "never",
+                initialEditValue: "NONE",
+              },
             ]}
             data={movements}
             options={{

@@ -169,6 +169,7 @@ export default function NewSetupPage(props) {
                     props.setSelectedWID(rowData.id);
                     // console.log(rowData.id);
                     navigate("/");
+                    // navigate("/summary");
                   },
                 },
                 {

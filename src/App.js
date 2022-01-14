@@ -17,6 +17,7 @@ import Timer from "./components/Timer";
 import NewSetupPage from "./pages/NewSetupPage";
 import NewAddWorkout from "./pages/NewAddWorkout";
 import VideoSearch from "./components/VideoSearch";
+import SummaryPage from "./pages/SummaryPage";
 const ldb = new Dexie("videos");
 ldb.version(1).stores({ videos: "++id,name,data" });
 
@@ -79,7 +80,7 @@ function App() {
           }
           aworkout["id"] = doc.id;
 
-          // console.log("JUST SET THE WORKOUT");
+          console.log("JUST SET THE WORKOUT");
           setSelectedWorkout(aworkout);
 
           // console.log(aworkout);
@@ -184,15 +185,15 @@ function App() {
     <div>
       <Router>
         <Routes>
-          <Route
-            path="/test"
+          {/* <Route
+            path="/summary"
             element={
-              <div className="w-96 mx-auto ">
-                <VideoSearch storage={storage} />
-              </div>
+              <SummaryPage
+                downloadedVideos={downloadedVideos}
+                selectedWorkout={selectedWorkout}
+              />
             }
-          />
-          <Route path="/timer" element={<Timer />} />
+          /> */}
           <Route
             path="/setup"
             element={

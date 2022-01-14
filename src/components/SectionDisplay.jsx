@@ -10,7 +10,7 @@ export default function SectionDisplay(props) {
         maxHeight: "80vh",
       }}
     >
-      <div className="h-full relative flex flex-col space-y-4 .py-4 pl-4 ">
+      <div className="h-full relative flex flex-col space-y-6 .py-4 pl-4 ">
         <div className="ml-4">
           <h1 className="text-6xl font-heading tracking-widest">
             {props.selectedSection.name.toUpperCase()}
@@ -26,8 +26,8 @@ export default function SectionDisplay(props) {
                 <h1
                   className={`${
                     props.selectedSection.movements.length > 6
-                      ? "text-2xl"
-                      : "text-3xl"
+                      ? "text-4xl"
+                      : "text-4xl"
                   } font-extrabold inline`}
                 >
                   {
@@ -39,8 +39,8 @@ export default function SectionDisplay(props) {
                 <h1
                   className={`${
                     props.selectedSection.movements.length > 6
-                      ? "text-2xl"
-                      : "text-3xl"
+                      ? "text-4xl"
+                      : "text-4xl"
                   } font-extrabold inline`}
                 >
                   {movement.name.toUpperCase()}
@@ -49,8 +49,8 @@ export default function SectionDisplay(props) {
               <h2
                 className={`${
                   props.selectedSection.movements.length > 6
-                    ? "text-xl"
-                    : "text-2xl"
+                    ? "text-4xl"
+                    : "text-4xl"
                 } font-bold text-gray-300 ml-6`}
               >
                 {movement.duration}
@@ -58,9 +58,9 @@ export default function SectionDisplay(props) {
               <h2
                 className={`${
                   props.selectedSection.movements.length > 6
-                    ? "text-xl"
-                    : "text-2xl"
-                } font-bold text-gray-300 ml-6`}
+                    ? "text-4xl"
+                    : "text-4xl"
+                } font-bold text-gray-300 ml-10`}
               >
                 {movement.equipment}
               </h2>

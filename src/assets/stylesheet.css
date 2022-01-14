@@ -1,27 +1,44 @@
 @font-face {
-    font-family: 'American Captain';
-    src: url('AmericanCaptain.woff2') format('woff2'),
-        url('AmericanCaptain.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
+  font-family: "American Captain";
+  src: url("AmericanCaptain.woff2") format("woff2"),
+    url("AmericanCaptain.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Kollektif';
-    src: url('Kollektif.woff2') format('woff2'),
-        url('Kollektif.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
+  font-family: "Kollektif";
+  src: url("Kollektif.woff2") format("woff2"),
+    url("Kollektif.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Montserrat';
-    src: url('Montserrat-Regular.woff2') format('woff2'),
-        url('Montserrat-Regular.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
+  font-family: "Montserrat";
+  src: url("Montserrat-Regular.woff2") format("woff2"),
+    url("Montserrat-Regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
 
+@font-face {
+  font-family: "KG Second Chances Sketch";
+  src: url("KGSecondChancesSketch.woff2") format("woff2"),
+    url("KGSecondChancesSketch.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DK Crayon Crumble";
+  src: url("DKCrayonCrumble.woff2") format("woff2"),
+    url("DKCrayonCrumble.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}

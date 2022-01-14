@@ -8,6 +8,9 @@ module.exports = {
         subHeading: ["Kollektif", "sans-serif"],
         body: ["Montserrat", "sans-serif"],
         timer: ["Alarm Clock", "sans-serif"],
+        chalk: ["DK Crayon Crumble"],
+        chalkHeading: ["KG Second Chances Sketch"],
+        chalkSubheading: ["DK Crayon Crumble"],
       },
       colors: {
         TARed: "#AB0000",
