@@ -18,6 +18,7 @@ import NewSetupPage from "./pages/NewSetupPage";
 import NewAddWorkout from "./pages/NewAddWorkout";
 import VideoSearch from "./components/VideoSearch";
 import SummaryPage from "./pages/SummaryPage";
+import TestPage from "./pages/TestPage";
 const ldb = new Dexie("videos");
 ldb.version(1).stores({ videos: "++id,name,data" });
 
@@ -194,6 +195,7 @@ function App() {
               />
             }
           /> */}
+          <Route path="/test" element={<TestPage />} />
           <Route
             path="/setup"
             element={

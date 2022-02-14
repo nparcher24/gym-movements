@@ -29,7 +29,7 @@ export default function Timer(props) {
   );
 
   const [time, setTime] = React.useState(
-    selectedTimer.countDown ? selectedTimer.totalTime : 0
+    selectedTimer?.countDown ? selectedTimer?.totalTime : 0
   );
 
   const [playShort] = useSound(shortSound);
@@ -53,7 +53,7 @@ export default function Timer(props) {
     console.log("adlkfjalksdjf");
     if (!running) {
       setRunning(true);
-      if (selectedTimer.startCount) {
+      if (selectedTimer?.startCount) {
         started();
       }
     }
@@ -113,7 +113,7 @@ export default function Timer(props) {
 
   function timerEnded() {
     let oldIndex = timerIndex;
-    if (oldIndex + 1 === props.timers.length && !selectedTimer.isStartCount) {
+    if (oldIndex + 1 === props.timers.length && !selectedTimer?.isStartCount) {
       console.log("TIMER ENDED, STOPPING");
       setTime(0);
       stopTimer();
@@ -121,7 +121,7 @@ export default function Timer(props) {
       console.log("TIMER ENDED, MOVING TO NEXT TIMER");
       var newTimer = props.timers[oldIndex];
 
-      if (selectedTimer.isStartCount) {
+      if (selectedTimer?.isStartCount) {
         //start count ended
         console.log("Start Count Ended");
         // newTimer = props.timers[oldIndex];
@@ -191,23 +191,23 @@ export default function Timer(props) {
     if (running) {
       interval = setInterval(() => {
         let oldTime = time;
-        let newTime = selectedTimer.countDown ? oldTime - 1 : oldTime + 1;
+        let newTime = selectedTimer?.countDown ? oldTime - 1 : oldTime + 1;
 
-        if (selectedTimer.totalTime != null) {
-          if (selectedTimer.countDown && newTime <= 0) {
+        if (selectedTimer?.totalTime != null) {
+          if (selectedTimer?.countDown && newTime <= 0) {
             // console.log("TIMER ENDED");
             if (selectedTimer.sound) {
               playLong();
             }
             timerEnded();
           } else if (
-            !selectedTimer.countDown &&
+            !selectedTimer?.countDown &&
             newTime === selectedTimer.totalTime + 1
           ) {
             // console.log("TIMER ENDED");
             timerEnded();
           } else {
-            if (selectedTimer.sound) {
+            if (selectedTimer?.sound) {
               if (newTime > 0 && newTime <= 3) {
                 // console.log("Number is: ", newTime);
                 playShort();
@@ -237,13 +237,13 @@ export default function Timer(props) {
   return (
     <div className="absolute bottom-0 items-center flex justify-center p-2 w-full overflow-x-hidden mb-2 ">
       <h1 className="w-full text-center rounded-2xl font-timer text-8xl text-red-500 bg-gray-800 py-2 shadow-2xl">
-        {selectedTimer.isStartCount ? (
+        {selectedTimer?.isStartCount ? (
           <div>{time}</div>
         ) : (
           <div>
-            {selectedTimer.showNumber ? (
+            {selectedTimer?.showNumber ? (
               <span className="text-blue-400 mr-10">
-                {selectedTimer.number}
+                {selectedTimer?.number}
               </span>
             ) : (
               <div />

@@ -38,7 +38,7 @@ export default function SummaryPage(props) {
             {"(" + props.selectedWorkout.description + ")"}
           </h1>
           <div
-            className="absolute bottom-12 top-48 bg-green-300 border-TARed border-8 rounded-3xl"
+            className="absolute bottom-12 top-48 bg-gray-800 border-TARed border-8 rounded-3xl"
             style={{
               width: "1200px",
               left: "50%",
@@ -50,7 +50,7 @@ export default function SummaryPage(props) {
                 return (
                   <div key={index} className="flex-initial">
                     <div className="p-4 space-y-2">
-                      <h1 className="text-xl pl-2 font-chalkHeading">
+                      <h1 className="text-xl pl-2 font-chalkHeading max-w-xs">
                         {index + 1 + " - " + section.name}
                       </h1>
                       <h1 className="text-2xl font-chalkSubheading pl-4">
@@ -60,11 +60,17 @@ export default function SummaryPage(props) {
                         return (
                           <div className="ml-6" key={index}>
                             <h1 className="text-xl font-chalkSubheading">
-                              {movement.name.toUpperCase()}
+                              {movement.name?.toUpperCase()}
+
+                              {movement.duration?.length > 0 ? (
+                                <span className="text-xl font-chalk">
+                                  {" - " + movement.duration}
+                                </span>
+                              ) : (
+                                <div />
+                              )}
                             </h1>
-                            <h1 className="text-xl font-chalk">
-                              {movement.duration}
-                            </h1>
+
                             <h1 className="text-xl font-chalk">
                               {movement.equipment}
                             </h1>

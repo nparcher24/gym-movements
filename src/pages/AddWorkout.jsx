@@ -109,6 +109,7 @@ export default function AddWorkout(props) {
       description: Yup.string(),
       //   dateMade: Yup.date(),
     }),
+
     onSubmit: (values) => {
       values["sections"] = [...sections];
       values["timers"] = [...timers];

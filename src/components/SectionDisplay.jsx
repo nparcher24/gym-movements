@@ -13,7 +13,7 @@ export default function SectionDisplay(props) {
       <div className="h-full relative flex flex-col space-y-6 .py-4 pl-4 ">
         <div className="ml-4">
           <h1 className="text-6xl font-heading tracking-widest">
-            {props.selectedSection.name.toUpperCase()}
+            {props.selectedSection.name?.toUpperCase()}
           </h1>
           <h1 className="text-4xl font-subHeading -mt-2">
             {props.selectedSection.duration}
@@ -43,7 +43,7 @@ export default function SectionDisplay(props) {
                       : "text-4xl"
                   } font-extrabold inline`}
                 >
-                  {movement.name.toUpperCase()}
+                  {movement.name?.toUpperCase()}
                 </h1>
               </div>
               <h2

@@ -58,7 +58,7 @@ export default function VideoDisplay(props) {
                 className="mx-2 px-4 relative  overflow-hidden rounded-xl border-2 border-black bg-white shadow-xl"
               >
                 <h1 className="py-2 w-full text-center font-heading tracking-wider text-4xl">
-                  {movement.name.toUpperCase()}
+                  {movement.name?.toUpperCase()}
                 </h1>
                 <video
                   className="w-full bg-white"

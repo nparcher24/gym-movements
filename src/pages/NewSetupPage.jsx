@@ -213,7 +213,7 @@ export default function NewSetupPage(props) {
         <Dialog
           as="div"
           className="fixed inset-0 overflow-hidden"
-          onClose={setOpen}
+          onClose={() => {}} //{setOpen}
         >
           <div className="absolute inset-0 overflow-hidden">
             <Dialog.Overlay className="absolute inset-0" />

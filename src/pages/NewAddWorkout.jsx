@@ -121,6 +121,7 @@ export default function NewAddWorkout(props) {
             const docRef = addDoc(collection(props.db, "workouts"), values);
             console.log("New document written with ID: ", docRef.id);
           }
+          console.log("SUBMITTED");
           props.setShowAddWorkout(false);
         }}
       >
@@ -137,8 +138,8 @@ export default function NewAddWorkout(props) {
             options={{
               search: false,
               actionsColumnIndex: -1,
-              // pageSizeOptions: [],
-              // pageSize: 5,
+              pageSizeOptions: [5, 10, 20],
+              pageSize: 5,
             }}
             editable={{
               onRowDelete: (oldData) =>
