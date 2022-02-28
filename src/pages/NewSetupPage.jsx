@@ -14,7 +14,7 @@ export default function NewSetupPage(props) {
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
   const [editWorkout, setEditWorkout] = React.useState(null);
-  const [workoutIndex, setWorkoutIndex] = React.useState(null);
+  // const [workoutIndex, setWorkoutIndex] = React.useState(null);
   const [showHistorical, setShowHistorical] = React.useState(false);
   const [workouts, setWorkouts] = React.useState([]);
   const [filteredWorkouts, setFilteredWorkouts] = React.useState([]);
@@ -254,7 +254,7 @@ export default function NewSetupPage(props) {
                         {...props}
                         saveWorkout={saveWorkout}
                         workout={editWorkout}
-                        workoutIndex={workoutIndex}
+                        workoutIndex={null}
                         updateWorkout={updateWorkout}
                         setShowAddWorkout={setOpen}
                       />

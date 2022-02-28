@@ -1,6 +1,6 @@
 import React from "react";
-import TimerRow from "../components/TimerRow";
-import { PlusSmIcon as PlusSmIconSolid } from "@heroicons/react/solid";
+// import TimerRow from "../components/TimerRow";
+// import { PlusSmIcon as PlusSmIconSolid } from "@heroicons/react/solid";
 import { Dialog, Transition } from "@headlessui/react";
 import TimerTable from "./TimerTable";
 // import { useFormik } from "formik";
@@ -9,35 +9,35 @@ import TimerTable from "./TimerTable";
 export default function TimerBuilder(props) {
   //   const [timers, setTimers] = React.useState(props.timers);
 
-  const submit = () => {
-    props.setShow(false);
-  };
+  // const submit = () => {
+  //   props.setShow(false);
+  // };
 
-  const addTimer = () => {
-    props.setTimers([
-      ...props.timers,
+  // const addTimer = () => {
+  //   props.setTimers([
+  //     ...props.timers,
 
-      {
-        countDown: true,
-        totalTime: "",
-        sound: true,
-        repeat: false,
-        showNumber: false,
-        restartNumber: false,
-        number: null,
-        group: false,
-        startCount: false,
-        autoStart: true,
-        date: Date(),
-      },
-    ]);
-  };
+  //     {
+  //       countDown: true,
+  //       totalTime: "",
+  //       sound: true,
+  //       repeat: false,
+  //       showNumber: false,
+  //       restartNumber: false,
+  //       number: null,
+  //       group: false,
+  //       startCount: false,
+  //       autoStart: true,
+  //       date: Date(),
+  //     },
+  //   ]);
+  // };
 
-  const updateTimer = (newTimer, index) => {
-    const oldTimers = [...props.timers];
-    oldTimers[index] = newTimer;
-    props.setTimers(oldTimers);
-  };
+  // const updateTimer = (newTimer, index) => {
+  //   const oldTimers = [...props.timers];
+  //   oldTimers[index] = newTimer;
+  //   props.setTimers(oldTimers);
+  // };
 
   return (
     <div>
@@ -45,7 +45,7 @@ export default function TimerBuilder(props) {
         <Dialog
           as="div"
           className="fixed z-10 inset-0 overflow-y-auto"
-          onClose={props.setShow}
+          onClose={() => {}} //{props.setShow}
         >
           <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <Transition.Child

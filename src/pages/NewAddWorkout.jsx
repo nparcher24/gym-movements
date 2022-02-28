@@ -1,18 +1,18 @@
 import React from "react";
 import { AutoField, AutoForm, SubmitField } from "uniforms-material";
-import { ThemeProvider } from "@material-ui/core";
-import { MuiTheme } from "../components/MuiTheme";
+// import { ThemeProvider } from "@material-ui/core";
+// import { MuiTheme } from "../components/MuiTheme";
 import Ajv from "ajv";
 import { JSONSchemaBridge } from "uniforms-bridge-json-schema";
 import moment from "moment";
-import TimerTable from "../components/TimerTable";
+// import TimerTable from "../components/TimerTable";
 import TimerBuilder from "../components/TimerBuilder";
-import { doc, setDoc, addDoc, collection, deleteDoc } from "firebase/firestore";
+import { doc, setDoc, addDoc, collection } from "firebase/firestore";
 import MaterialTable, { MTableBodyRow } from "@material-table/core";
 import NewAddSection from "../components/NewAddSection";
 import { Dialog, Transition } from "@headlessui/react";
 import { DocumentDuplicateIcon } from "@heroicons/react/outline";
-import { v4 as uuidv4 } from "uuid";
+// import { v4 as uuidv4 } from "uuid";
 
 const schema = {
   title: "Workout",
@@ -248,7 +248,7 @@ export default function NewAddWorkout(props) {
         <Dialog
           as="div"
           className="fixed z-10 inset-0 overflow-y-auto"
-          onClose={setShowAddSection}
+          onClose={() => {}} //{setShowAddSection}
         >
           <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <Transition.Child
