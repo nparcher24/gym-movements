@@ -1,5 +1,5 @@
 import { DocumentDuplicateIcon } from "@heroicons/react/outline";
-import MaterialTable from "@material-table/core";
+import MaterialTable, { MTableBodyRow } from "@material-table/core";
 import React from "react";
 
 export default function TimerTable(props) {
@@ -122,6 +122,34 @@ export default function TimerTable(props) {
     props.setTimers(updateTimerNumbers([...props.timers]));
   }, []);
 
+  const DragState = {
+    row: -1,
+    dropIndex: -1, // drag target
+  };
+
+  const offsetIndex = (from, to, arr = []) => {
+    if (from < to) {
+      let start = arr.slice(0, from),
+        between = arr.slice(from + 1, to + 1),
+        end = arr.slice(to + 1);
+      return [...start, ...between, arr[from], ...end];
+    }
+    if (from > to) {
+      let start = arr.slice(0, to),
+        between = arr.slice(to, from),
+        end = arr.slice(from + 1);
+      return [...start, arr[from], ...between, ...end];
+    }
+    return arr;
+  };
+
+  const reOrderRow = (from, to) => {
+    let newtableData = offsetIndex(from, to, [...props.timers]);
+    //Update react state
+    let final = updateTimerNumbers(newtableData);
+    props.setTimers(final);
+  };
+
   return (
     <MaterialTable
       title="Timers"
@@ -168,6 +196,33 @@ export default function TimerTable(props) {
           },
         },
       ]}
+      components={{
+        Row: (props) => (
+          <MTableBodyRow
+            {...props}
+            draggable="true"
+            onDragStart={(e) => {
+              // console.log("onDragStart");
+              DragState.row = props.data.tableData.id;
+            }}
+            onDragEnter={(e) => {
+              e.preventDefault();
+              if (props.data.tableData.id !== DragState.row) {
+                DragState.dropIndex = props.data.tableData.id;
+                // console.log("onDragEnter" + props.data.tableData.id);
+              }
+            }}
+            onDragEnd={(e) => {
+              // console.log(`onDragEnd`);
+              if (DragState.dropIndex !== -1) {
+                reOrderRow(DragState.row, DragState.dropIndex);
+              }
+              DragState.row = -1;
+              DragState.dropIndex = -1;
+            }}
+          />
+        ),
+      }}
       editable={{
         onBulkUpdate: (changes) => {
           return new Promise((resolve, reject) => {

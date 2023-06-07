@@ -67,7 +67,8 @@ export default function NewAddSection(props) {
   const reOrderRow = (from, to) => {
     let newtableData = offsetIndex(from, to, [...movements]);
     //Update react state
-    setMovements(newtableData);
+    const final = updateTimerNumbers(newtableData);
+    setMovements(final);
   };
 
   function videoSelected(videoname) {
