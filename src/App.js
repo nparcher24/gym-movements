@@ -2,22 +2,15 @@ import React from "react";
 import "./App.css";
 import BasePage from "./pages/BasePage";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import SetupPage from "./pages/SetupPage";
-import { StyledFirebaseAuth } from "react-firebaseui";
-import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
-import { getFirestore } from "firebase/firestore";
+import { initializeApp } from "firebase/app";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
-import { collection, query, onSnapshot, doc, getDoc } from "firebase/firestore";
 import Dexie from "dexie";
 import { useLiveQuery } from "dexie-react-hooks";
 import ProgressModal from "./components/ProgressModal";
-// import Temp from "./pages/Temp";
-import Timer from "./components/Timer";
+import LoginForm from "./components/LoginForm";
 import NewSetupPage from "./pages/NewSetupPage";
-import NewAddWorkout from "./pages/NewAddWorkout";
-import VideoSearch from "./components/VideoSearch";
-import SummaryPage from "./pages/SummaryPage";
 import TestPage from "./pages/TestPage";
 const ldb = new Dexie("videos");
 ldb.version(1).stores({ videos: "++id,name,data" });
@@ -35,8 +28,9 @@ function App() {
   };
 
   const [downloadProgress, setDownloadProgress] = React.useState(1.0);
-  const firebaseApp = firebase.initializeApp(firebaseConfig);
-  const db = getFirestore();
+  const firebaseApp = initializeApp(firebaseConfig);
+  const auth = getAuth(firebaseApp);
+  const db = getFirestore(firebaseApp);
   const storage = getStorage(firebaseApp);
   const allItems = useLiveQuery(() => ldb.videos.toArray(), []);
   const [selectedWID, setSelectedWID] = React.useState(null);
@@ -44,26 +38,20 @@ function App() {
   const [downloadedVideos, setDownloadedVideos] = React.useState([]);
   const [finished, setFinished] = React.useState(false);
 
-  const uiConfig = {
-    // Popup signin flow rather than redirect flow.
-    signInFlow: "popup",
-    // Redirect to /signedIn after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
-    signInSuccessUrl: "/setup",
-    // We will display Google and Facebook as auth providers.
-    signInOptions: [firebase.auth.EmailAuthProvider.PROVIDER_ID],
+  const handleLoginSuccess = () => {
+    // Navigate to setup page after successful login
+    window.location.href = "/setup";
   };
 
   const [isSignedIn, setIsSignedIn] = React.useState(false); // Local signed-in state.
 
   // Listen to the Firebase Auth state and set the local state.
   React.useEffect(() => {
-    const unregisterAuthObserver = firebase
-      .auth()
-      .onAuthStateChanged((user) => {
-        setIsSignedIn(!!user);
-      });
+    const unregisterAuthObserver = onAuthStateChanged(auth, (user) => {
+      setIsSignedIn(!!user);
+    });
     return () => unregisterAuthObserver(); // Make sure we un-register Firebase observers when the component unmounts.
-  }, []);
+  }, [auth]);
 
   React.useEffect(() => {
     async function fetchMyWorkout() {
@@ -92,7 +80,7 @@ function App() {
     }
 
     fetchMyWorkout();
-  }, [selectedWID]);
+  }, [selectedWID, db]);
 
   // function addToDownloadedVids(video) {
   //   setDownloadedVideos((old) => [...old, video]);
@@ -167,17 +155,21 @@ function App() {
 
       // console.log("Names to download: ", tempNames);
     }
-  }, [selectedWorkout]);
+  }, [selectedWorkout, storage]);
 
   if (!isSignedIn) {
     return (
-      <div className="flex flex-col w-screen h-screen bg-gray-800 items-center space-y-4 py-24">
-        <h1 className="text-4xl text-white font-bold">WORKOUT LOGIN</h1>
-        <p className="text-xl text-white">Please sign in to proceed</p>
-        <StyledFirebaseAuth
-          uiConfig={uiConfig}
-          firebaseAuth={firebase.auth()}
-        />
+      <div className="flex flex-col w-screen h-screen bg-gray-800 items-center justify-center px-4">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl text-white font-bold mb-2">WORKOUT LOGIN</h1>
+            <p className="text-xl text-white">Please sign in to proceed</p>
+          </div>
+          <LoginForm 
+            auth={auth} 
+            onLoginSuccess={handleLoginSuccess}
+          />
+        </div>
       </div>
     );
   }

@@ -1,6 +1,6 @@
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
-  darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
       fontFamily: {
@@ -19,9 +19,6 @@ module.exports = {
         TADarkBlue: "#304890",
       },
     },
-  },
-  variants: {
-    extend: {},
   },
   plugins: [],
 };
